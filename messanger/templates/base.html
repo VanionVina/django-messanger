@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <title>Messanger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel='stylesheet' href="{% static 'css/base.css' %}">
+</head>
+<body>
+<div id="viewport">
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <header>
+        <a href="#">Messanger</a>
+      </header>
+      <ul class="nav">
+        <li>
+          <a href="#">
+            My profile
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'messanger:chat_room' %}">
+            Messages
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            Friends
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- Content -->
+    <div id="content">
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
+              </a>
+            </li>
+            <li>
+                <a href="#">{{ user.username }}</a>
+            </li>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                  Dropdown
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                </ul>
+              </div>
+          </ul>
+        </div>
+      </nav>
+      <div class="container-fluid">
+
+        {% block content %}
+        <h1>Simple Sidebar</h1>
+        <p>
+          Make sure to keep all page content within the 
+          <code>#content</code>.
+        </p>
+        {% endblock %}
+
+      </div>
+    </div>
+  </div>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</body>
+</html>
