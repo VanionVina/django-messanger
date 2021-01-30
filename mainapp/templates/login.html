@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+{% load crispy_forms_tags %}
+<html>
+<head>
+  <title>Messanger login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link href="{% static 'css/regist.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+	<div class="main-w3layouts wrapper">
+		<h1>LogIn</h1>
+		<div class="main-agileinfo">
+			<div class="agileits-top">
+        {% if messages %}
+          {% for message in messages %}
+            <div class='alert alert-success'>
+              {{ message }}
+            </div>
+
+          {% endfor %}
+        {% endif %}
+				<form action="#" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+          <input type="submit" value="SIGNUP">
+				</form>
+				<p>
+          Not registered? 
+          <a style='text-decoration: underline;' href="{% url 'mainapp:registration' %}">
+             SignUp Now!
+          </a>
+        </p>
+			</div>
+		</div>
+		<!-- copyright -->
+		<div class="colorlibcopy-agile">
+			<p>© 2018 Colorlib Signup Form. All rights reserved | Design by <a href="https://colorlib.com/" target="_blank">Colorlib</a></p>
+		</div>
+		<!-- //copyright -->
+		<ul class="colorlib-bubbles">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+	<!-- //main -->
+</body>
+</html>
