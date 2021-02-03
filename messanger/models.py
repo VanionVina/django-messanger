@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from imagekit.models import ProcessedImageField, ImageSpecField
+from imagekit.processors import ResizeToFill
 
 
 
@@ -13,6 +15,16 @@ class Consumer(models.Model):
     phone = models.CharField(max_length=20, verbose_name='Phone number')
     birth = models.DateField(verbose_name='Birthday')
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
+    avatar = ProcessedImageField(upload_to='avatars',
+                                processors=[ResizeToFill(300, 300)],
+                                format='JPEG',
+                                options={'quality': 60},
+                                default='avatars/default.jpeg')
+    avatar_thumb = ImageSpecField(source='avatar',
+                                  processors=[ResizeToFill(100, 100)],
+                                  format='JPEG',
+                                  options={'quality': 60})
+
 
     def __str__(self):
         return self.user.username

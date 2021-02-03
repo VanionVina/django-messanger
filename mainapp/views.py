@@ -1,11 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.urls import reverse
 
 
-from mainapp.logic.new_user import save_new_user
+from mainapp.logic.user_logic import save_new_user, login_user
 from .forms import LoginForm, RegisterFormConsumer, RegistrationFormUser
 
 
@@ -23,13 +23,9 @@ class WelcomeView(View):
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user:
-                login(request, user)
+            login_user(form, request)
             return HttpResponseRedirect(reverse('messanger:chat_room'))
-        return render(request, 'welcome.html', context={'form': form})
+        return render(request, 'login.html', context={'form': form})
 
 
 class LoginView(View):
@@ -44,11 +40,7 @@ class LoginView(View):
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            passwd = form.cleaned_data['password']
-            user = authenticate(username=username, password=passwd)
-            if user:
-                login(request, user)
+            login_user(form, request)
             return HttpResponseRedirect(reverse('messanger:chat_room'))
         return render(request, 'login.html', context={'form': form})
 
@@ -79,3 +71,8 @@ class RegistrationView(View):
         return render(request, 'registration.html', context)
 
 
+class LogoutView(View):
+
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect(reverse('mainapp:welcome'))
