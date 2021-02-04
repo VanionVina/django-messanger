@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from imagekit.models import ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill
 
@@ -18,13 +19,12 @@ class Consumer(models.Model):
     avatar = ProcessedImageField(upload_to='avatars',
                                 processors=[ResizeToFill(300, 300)],
                                 format='JPEG',
-                                options={'quality': 60},
-                                default='avatars/default.jpeg')
-    avatar_thumb = ImageSpecField(source='avatar',
-                                  processors=[ResizeToFill(100, 100)],
-                                  format='JPEG',
-                                  options={'quality': 60})
+                                options={'quality': 100},
+                                default='avatars/default.jpg')
 
+    def get_absolute_url(self):
+        user_id = self.user.id
+        return reverse('messanger:user_profile', kwargs={'user_id': user_id})
 
     def __str__(self):
         return self.user.username

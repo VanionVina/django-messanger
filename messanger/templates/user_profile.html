@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<br><br>
+<div class="container emp-profile">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="profile-img">
+                    <img src="{{user_c.consumer.avatar.url}}" style="width: 80%;" alt=""/>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="content">
+                    <div class="tab-pane">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Username</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.username}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Phone</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.consumer.phone}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.consumer.gender}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Birthday</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.consumer.birth}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if user.id == user_c.id %}
+            <div class="col-md-2">
+                <a href="#"><button class="button">Edit profile</button></a>
+            </div>
+            {% endif %}
+
+        </div>
+        <!-- <div class="row">
+            <div class="col-md-4">
+                <div class="profile-work">
+                    <p>WORK LINK</p>
+                    <a href="">Website Link</a><br/>
+                    <a href="">Bootsnipp Profile</a><br/>
+                    <a href="">Bootply Profile</a>
+                    <p>SKILLS</p>
+                    <a href="">Web Designer</a><br/>
+                    <a href="">Web Developer</a><br/>
+                    <a href="">WordPress</a><br/>
+                    <a href="">WooCommerce</a><br/>
+                    <a href="">PHP, .Net</a><br/>
+                </div>
+            </div>
+        </div> -->
+</div>
+
+{% endblock %}
