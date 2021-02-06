@@ -1,11 +1,10 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.views.generic import View
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib import messages
 from django.urls import reverse
 
-
-from mainapp.logic.user_logic import save_new_user, login_user
+from mainapp.logic.user_logic import login_user, save_new_user
 from .forms import LoginForm, RegisterFormConsumer, RegistrationFormUser
 
 
@@ -58,7 +57,7 @@ class RegistrationView(View):
     
     def post(self, request):
         user_form = RegistrationFormUser(request.POST)
-        consumer_form = RegisterFormConsumer(request.POST)
+        consumer_form = RegisterFormConsumer(request.POST, request.FILES)
         if user_form.is_valid() and consumer_form.is_valid():
             save_new_user(user_form, consumer_form)
             messages.add_message(request, messages.INFO, 'Register, now log in')

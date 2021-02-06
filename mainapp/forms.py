@@ -1,5 +1,5 @@
-from django import forms
 from django.contrib.auth.models import User
+from django import forms
 
 from messanger.models import Consumer
 
@@ -28,9 +28,9 @@ class RegisterFormConsumer(forms.ModelForm):
 
     class Meta:
         model = Consumer
-        exclude = ['user',]
+        exclude = ('user',)
         widgets = {
-            'birth': forms.TextInput(attrs={'type': 'date'})
+            'birth': forms.TextInput(attrs={'type': 'date'}),
         }
 
 
@@ -40,7 +40,10 @@ class RegistrationFormUser(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'email', 'password']
+        widgets = {
+            'password': forms.PasswordInput()
+        }
 
     def clean(self):
         username = self.cleaned_data['username']
@@ -52,3 +55,12 @@ class RegistrationFormUser(forms.ModelForm):
         if passwd != confirm_passwd:
             raise forms.ValidationError('Passwords don\'t math')
         return self.cleaned_data
+    
+    def save(self):
+        username = self.cleaned_data['username']
+        passwd = self.cleaned_data['password']
+        email = self.cleaned_data['email']
+        user = User.objects.create(username=username, email=email)
+        user.set_password(passwd)
+        user.save()
+        return user

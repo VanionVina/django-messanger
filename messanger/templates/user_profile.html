@@ -45,13 +45,21 @@
                                 <p>{{user_c.consumer.birth}}</p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.email}}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {% if user.id == user_c.id %}
             <div class="col-md-2">
-                <a href="#"><button class="button">Edit profile</button></a>
+                <a href="{% url 'messanger:change_profile' %}"><button class="button">Edit profile</button></a>
             </div>
             {% endif %}
 

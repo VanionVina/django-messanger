@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block content %}
 
 <div class="row">
@@ -9,9 +10,14 @@
         
 
 <div class="text-center">
-  <img src="{{ user_c.consumer.avatar.url }}" class="avatar img-circle img-thumbnail" alt="avatar">
+  <img src="{{ user.consumer.avatar.url }}" class="avatar img-circle img-thumbnail" alt="avatar">
   <h6>Upload a different photo...</h6>
-  <input type="file" class="text-center center-block file-upload">
+  <form enctype="multipart/form-data" method="post" action="{% url 'messanger:change_user_avatar' %}">
+      {% csrf_token %}
+    {{form_image.avatar}}
+    <br>
+    <input type="submit" value='Change avatar'>
+  </form>
 </div></hr><br>
     
     <ul class="list-group">
@@ -31,49 +37,36 @@
 
     <div class="tab-content">
       <div class="tab-pane active" id="home">
+          {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+                {% endfor %}
+          {% endif %}
           <hr>
-            <form class="form" action="##" method="post" id="registrationForm">
-
-                <div class="form-group">
+            <form class="form" action="" method="post">
+                {% csrf_token %}
+                {% for line in form %}
+                <div class='form-ground'>
                     <div class="col-xs-6">
-                        <label for="first_name"><h4>username</h4></label>
-                        <input type="text" class="form-control" name="username" id="first_name" placeholder="username" title="enter your first name if any.">
+                        <label><h4>{{line.label}}</h4></label>
+                        {% render_field line class="form-control" %}
                     </div>
                 </div>
-    
-                <div class="form-group">
-                    <div class="col-xs-6">
-                        <label for="phone"><h4>Phone</h4></label>
-                        <input type="text" class="form-control" name="phone" id="phone" placeholder="enter phone" title="enter your phone number if any.">
-                    </div>
-                </div>
-    
-                <div class="form-group">
-                    <div class="col-xs-6">
-                        <label for="email"><h4>Email</h4></label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com" title="enter your email.">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-xs-6">
-                        <label for="password"><h4>Password</h4></label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="password" title="enter your password.">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-xs-6">
-                      <label for="password2"><h4>Verify password</h4></label>
-                        <input type="password" class="form-control" name="password2" id="password2" placeholder="password2" title="enter your password2.">
-                    </div>
-                </div>
+                {% endfor %}
 
                 <div class="form-group">
                      <div class="col-xs-12">
                           <br>
                             <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
-                             <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
                       </div>
                 </div>
             </form>
@@ -82,4 +75,12 @@
   </div><!--/col-9-->
 </div><!--/row-->
 
+<script>
+var date = new Date("{{user.consumer.birth.month}} {{user.consumer.birth.day}} {{user.consumer.birth.year}}")
+document.getElementById('id_username').value = "{{user.username}}";
+document.getElementById('id_birth').valueAsDate = date;
+document.getElementById('id_gender').value = "{{user.consumer.gender}}";
+document.getElementById('id_email').value = "{{user.email}}";
+document.getElementById('id_phone').value = "{{user.consumer.phone}}";
+</script>
 {% endblock %}
