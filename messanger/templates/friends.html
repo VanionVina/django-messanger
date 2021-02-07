@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>My friends</h1>
+
+{% for friend in friends %}
+<a href={{friend.get_absolute_url}}><h3>{{friend.user.username}}</h3></a>
+{% endfor %}
+
+{% endblock %}

@@ -12,19 +12,18 @@ class ConsumerUpdateProfile(forms.ModelForm):
 
     class Meta:
         model = Consumer
-        exclude = ['avatar', 'user']
+        exclude = ['avatar', 'user', 'friends']
         widgets = {
             'birth': forms.TextInput(attrs={'type': 'date'})
         }
 
-    def __init__(self, *args, user_t='', **kwargs):
+    def __init__(self, *args, user_t='', user_id='', **kwargs):
         self.user_username = user_t
+        self.user_id = user_id
         super(ConsumerUpdateProfile, self).__init__(*args, **kwargs)
 
     def clean(self):
         username = self.cleaned_data['username']
-        print(username)
-        print(self.user_username)
         if username == self.user_username:
             pass
         else:
@@ -40,7 +39,7 @@ class ConsumerUpdateProfile(forms.ModelForm):
         birth = self.cleaned_data['birth']
         gender = self.cleaned_data['gender']
 
-        user = User.objects.get(username=username)
+        user = User.objects.get(id=self.user_id)
         consumer = Consumer.objects.get(user=user)
 
         user.username = username

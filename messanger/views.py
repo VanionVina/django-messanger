@@ -41,7 +41,7 @@ class ChangeProfile(View):
         return render (request, 'user_profile_change.html', context)
 
     def post(self, request):
-        form = ConsumerUpdateProfile(data=request.POST, user_t=request.user.username)
+        form = ConsumerUpdateProfile(data=request.POST, user_t=request.user.username, user_id=request.user.id)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('messanger:user_profile', kwargs={'user_id': request.user.id}))
@@ -54,3 +54,12 @@ class ChangeUserAvatar(View):
             change_user_avatar(request.user, form)
             return HttpResponseRedirect(reverse('messanger:user_profile', kwargs={'user_id': request.user.id}))
         return render(request, 'user_profile_change.html', context={'form': form})
+
+class FriendsView(View):
+    def get(self, request):
+        consumer = Consumer.objects.get(user=request.user)
+        friends = consumer.friends.all()
+        context = {
+                'friends': friends,
+                }
+        return render(request, 'friends.html', context)

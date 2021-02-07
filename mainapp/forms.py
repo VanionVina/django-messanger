@@ -28,7 +28,7 @@ class RegisterFormConsumer(forms.ModelForm):
 
     class Meta:
         model = Consumer
-        exclude = ('user',)
+        exclude = ('user', 'friends')
         widgets = {
             'birth': forms.TextInput(attrs={'type': 'date'}),
         }

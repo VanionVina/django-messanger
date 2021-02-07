@@ -16,6 +16,7 @@ class Consumer(models.Model):
     phone = models.CharField(max_length=20, verbose_name='Phone number')
     birth = models.DateField(verbose_name='Birthday')
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
+    friends = models.ManyToManyField('Consumer', default=None, null=True, blank=True,  verbose_name='Friends')
     avatar = ProcessedImageField(upload_to='avatars',
                                 processors=[ResizeToFill(300, 300)],
                                 format='JPEG',
