@@ -1,0 +1,18 @@
+install and test pgbouncer (systemctl status pgbouncer)
+
+in /etc/pgbouncer/pgbouncer.ini change:
+    [databases]
+    * = host=localhost port={5432 for postgresql default}
+    [pgbouncer]
+    listen_addr = 127.0.0.1
+    listen_port = 6432
+    auth_type = md5
+    auth_file = /etc/pgbouncer/userlist.txt
+    max_client_conn = 100       #or 1000? You can
+    default_pool_size = 20
+
+to generate text for userlist.txt run command:
+psql -Atq -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow"
+as postgres user (sudo su postgres)
+
+in djangoproject.settings change database port to pgbouncer port (6432 in this sample)

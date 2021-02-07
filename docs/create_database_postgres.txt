@@ -1,0 +1,20 @@
+CREATE DATABASE {database name};
+CREATE USER {username} WITH ENCRYPTED PASSWORD '{password}';
+ALTER ROLE {username} SET client_encoding TO 'utf8';
+ALTER ROLE {username} SET default_transaction_isolation TO 'read committed';
+ALTER ROLE {username} SET timezone to 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE {database name} TO {username};
+
+-------------------In django settings-------------------
+DATABASE = {
+
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '{database name}',
+        'USER': '{username}',
+        'PASSWORD': '{password}',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
