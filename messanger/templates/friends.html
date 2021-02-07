@@ -3,8 +3,15 @@
 
 <h1>My friends</h1>
 
-{% for friend in friends %}
-<a href={{friend.get_absolute_url}}><h3>{{friend.user.username}}</h3></a>
-{% endfor %}
+<div>
+  {% for friend in friends %}
+    <div class="col-md-6">
+      <div>
+        <img src="{{ friend.avatar.url }}" style="width: 90px;">
+        <a href={{friend.get_absolute_url}}><span style="font-size 20px;">{{friend.user.username}}</span></a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
 
 {% endblock %}
