@@ -5,16 +5,33 @@ from django.contrib.auth.models import User
 
 from messanger.forms import ConsumerUpdateProfile, ConsumerChangeAvatar
 from messanger.logic.user_change import change_user_avatar
-from messanger.models import Consumer
+from messanger.logic.chat_logic import get_user_chats
+from messanger.models import Consumer, ChatRoom, Message
+from .mixins import FriendsListMixin
 
 
-class ChatRoom(View):
-    def get(self, request):
+class ChatRoomView(View):
+    def get(self, request, **kwargs):
+        chat_id = kwargs.get('chat_id')
         consumer = get_object_or_404(Consumer, user=request.user)
+        user_chats = ChatRoom.objects.filter(users=request.user)
+        this_chat, chat_messages = get_user_chats(user_chats, chat_id)
         context = {
             'consumer': consumer,
+            'user_chats': user_chats,
+            'this_chat': this_chat,
+            'chat_messages': chat_messages,
         }
         return render(request, 'chat_room.html', context)
+    
+    def post(self, request, chat_id):
+        message_text = request.POST.get('sended-message')
+        chat = get_object_or_404(ChatRoom, id=chat_id)
+        if message_text:
+            user = request.user
+            Message.objects.create(from_user=user, chat_room=chat, text=message_text)
+        return HttpResponseRedirect(chat.get_absolute_url())
+
 
 
 class BaseView(View):
@@ -30,6 +47,7 @@ class UserProfile(View):
         }
         return render(request, 'user_profile.html', context)
 
+
 class ChangeProfile(View):
     def get(self, request):
         form = ConsumerUpdateProfile
@@ -44,8 +62,9 @@ class ChangeProfile(View):
         form = ConsumerUpdateProfile(data=request.POST, user_t=request.user.username, user_id=request.user.id)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('messanger:user_profile', kwargs={'user_id': request.user.id}))
+            return HttpResponseRedirect(request.user.consumer.get_absolute_url())
         return render(request, 'user_profile_change.html', context={'form': form})
+
 
 class ChangeUserAvatar(View):
     def post(self, request):
@@ -55,11 +74,20 @@ class ChangeUserAvatar(View):
             return HttpResponseRedirect(reverse('messanger:user_profile', kwargs={'user_id': request.user.id}))
         return render(request, 'user_profile_change.html', context={'form': form})
 
-class FriendsView(View):
+
+class FriendsView(FriendsListMixin, View):
     def get(self, request):
-        consumer = Consumer.objects.get(user=request.user)
-        friends = consumer.friends.all()
         context = {
-                'friends': friends,
+                'friends': self.friends,
                 }
+        return render(request, 'friends.html', context)
+
+    def post(self, request):
+        context = {
+            'friends': self.friends,
+        }
+        search_qwr = request.POST.get('search-friends')
+        if search_qwr:
+            searched = User.objects.filter(username__icontains=search_qwr)
+            context['searched'] = searched
         return render(request, 'friends.html', context)

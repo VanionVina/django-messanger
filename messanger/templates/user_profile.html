@@ -7,6 +7,18 @@
             <div class="col-md-4">
                 <div class="profile-img">
                     <img src="{{user_c.consumer.avatar.url}}" style="width: 80%;" alt=""/>
+
+                    {% if user_c.consumer in user.consumer.friends.all %}
+                        <h3>This is your friend</h3>
+                    {% elif user_c == user %}
+                        <!-- Nothin here -->
+                    {% else %}
+                        <button class="button btn-success">Add to friends</button>
+                    {% endif %}
+
+                    {% if user != user_c %}
+                    <button class="button btn-success">Write message</button>
+                    {% endif %}
                 </div>
             </div>
 
@@ -51,6 +63,14 @@
                             </div>
                             <div class="col-md-6">
                                 <p>{{user_c.email}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Friends</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{user_c.consumer.friends.count}}</p>
                             </div>
                         </div>
                     </div>

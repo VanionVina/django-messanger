@@ -4,16 +4,17 @@
 
 <link rel='stylesheet' href="{% static 'css/chat_room.css' %}"> 
 <div class="container bootstrap snippets bootdey">
+	{% if this_chat %}
     <div class="row">
 		<div class="col-md-4 bg-white ">
-            <div class=" row border-bottom padding-sm" style="height: 40px;">
-            	Member
+			<div class=" row border-bottom padding-sm" style="height: 40px;">
+				My chats
             </div>
             
             <!-- =============================================================== -->
             <!-- member list -->
             <ul class="friend-list">
-                <li class="active bounceInDown">
+                <!-- <li class="active bounceInDown">
                 	<a href="#" class="clearfix">
                 		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
                 		<div class="friend-name">	
@@ -23,84 +24,19 @@
                 		<small class="time text-muted">Just now</small>
                 		<small class="chat-alert label label-danger">1</small>
                 	</a>
-                </li>
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Jane Doe</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">5 mins ago</small>
-                	<small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                	</a>
-                </li> 
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>  
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>     
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>        
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_6.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>          
-                <li>
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_5.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Kate</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">Yesterday</small>
-                		<small class="chat-alert text-muted"><i class="fa fa-reply"></i></small>
-                	</a>
-                </li>
-                <li>
-                    <a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_2.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>Jane Doe</strong>
-                		</div>
-                		<div class="last-message text-muted">Lorem ipsum dolor sit amet.</div>
-                		<small class="time text-muted">5 mins ago</small>
-                	<small class="chat-alert text-muted"><i class="fa fa-check"></i></small>
-                	</a>
-                </li>                 
+				</li> -->
+				{% for chat in user_chats %}
+				<li>
+					<a href="{{chat.get_absolute_url}}" class="clearfix">
+						<img src="{{chat.image.url}}" alt="" class="img-circle">
+						<div class="friend-name">	
+							<strong>{{chat.name}}</strong>
+						</div>
+						<!-- <small class="time text-muted"></small> -->
+					<!-- <small class="chat-alert text-muted"><i class="fa fa-check"></i></small> -->
+					</a>
+				</li> 
+				{% endfor %}
             </ul>
 		</div>
         
@@ -109,116 +45,66 @@
     	<div class="col-md-8 bg-white ">
             <div class="chat-message">
                 <ul class="chat">
-                    <li class="left clearfix">
-                    	<span class="chat-img pull-left">
-                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">John Doe</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    		</p>
-                    	</div>
-                    </li>
-                    <li class="right clearfix">
-                    	<span class="chat-img pull-right">
-                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">Sarah</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                    		</p>
-                    	</div>
-                    </li>
-                    <li class="left clearfix">
-                        <span class="chat-img pull-left">
-                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">John Doe</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    		</p>
-                    	</div>
-                    </li>
-                    <li class="right clearfix">
-                        <span class="chat-img pull-right">
-                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">Sarah</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                    		</p>
-                    	</div>
-                    </li>                    
-                    <li class="left clearfix">
-                        <span class="chat-img pull-left">
-                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">John Doe</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    		</p>
-                    	</div>
-                    </li>
-                    <li class="right clearfix">
-                        <span class="chat-img pull-right">
-                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">Sarah</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                    		</p>
-                    	</div>
-                    </li>
-                    <li class="right clearfix">
-                        <span class="chat-img pull-right">
-                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
-                    	</span>
-                    	<div class="chat-body clearfix">
-                    		<div class="header">
-                    			<strong class="primary-font">Sarah</strong>
-                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
-                    		</div>
-                    		<p>
-                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
-                    		</p>
-                    	</div>
-                    </li>                    
+					{% if chat_messages %}
+						{% for message in chat_messages %}
+						{% if message.from_user != user %}
+						<li class="left clearfix">
+							<span class="chat-img pull-left">
+								<a href="{{message.from_user.consumer.get_absolute_url}}">
+									<img src="{{message.from_user.consumer.avatar.url}}" alt="User Avatar">
+								</a>
+							</span>
+							<div class="chat-body clearfix">
+								<div class="header">
+									<a href="{{message.from_user.consumer.get_absolute_url}}">
+										<strong class="primary-font">
+											{{message.from_user.username}}
+										</strong>
+									</a>
+									<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{message.sended}}</small>
+								</div>
+								<p>
+									{{message.text}}
+								</p>
+							</div>
+						{% else %}
+						<li class="right clearfix">
+							<span class="chat-img pull-right">
+								<a href="{{message.from_user.consumer.get_absolute_url}}"><img src="{{message.from_user.consumer.avatar.url}}" alt="User Avatar"></a>
+							</span>
+							<div class="chat-body clearfix">
+								<div class="header">
+									<a href="{{message.from_user.consumer.get_absolute_url}}"><strong class="primary-font">{{message.from_user.username}}</strong></a>
+									<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> {{message.sended}}</small>
+								</div>
+								<p>
+									{{message.text}}
+								</p>
+							</div>
+						</li>
+						{% endif %}
+						{% endfor %}
+					{% endif %}
                 </ul>
-            </div>
+			</div>
             <div class="chat-box bg-white">
-            	<div class="input-group">
-            		<input class="form-control border no-shadow no-rounded" placeholder="Type your message here">
-            		<span class="input-group-btn">
-            			<button class="btn btn-success no-rounded" type="button">Send</button>
-            		</span>
-            	</div><!-- /input-group -->	
-            </div>            
+					<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
+            			<div class="input-group">
+							{% csrf_token %}
+							<input name='sended-message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-success no-rounded" type="button">Send</button>
+							</span>
+            			</div><!-- /input-group -->	
+					</form>
+			</div>            
 		</div>        
   </div>
+
+{% else %}
+<h2>There is no chats</h2>
+{% endif %}
+
 </div>
 {% endblock %}
 
