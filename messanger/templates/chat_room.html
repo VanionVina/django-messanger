@@ -25,6 +25,23 @@
                 		<small class="chat-alert label label-danger">1</small>
                 	</a>
 				</li> -->
+				<li>
+						<a class="clearfix">
+							<button class="button btn-success" style="width: 50%;" onclick="NewChatForm" id="NewChatForm">
+							<img src="{% static 'plus.png' %}" style="width: 30px; height: 30px;" alt="Add new" class="img-circle">
+							<div id="AddNewChatText">
+								Add new chat
+							</div>
+							</button>
+							<div style="visibility: hidden;" id="AddNewChatName">
+								<form method="post" action="{% url 'messanger:create_new_chat' %}">
+								{% csrf_token %}
+								<input name='chat_name'>
+								<button type="submit" class="button btn-success">add</button>
+								</form>
+							</div>
+						</a>
+				</li>
 				{% for chat in user_chats %}
 				<li>
 					<a href="{{chat.get_absolute_url}}" class="clearfix">
@@ -42,7 +59,18 @@
         
         <!--=========================================================-->
         <!-- selected chat -->
-    	<div class="col-md-8 bg-white ">
+	<div class="chat-box bg-white col-md-8" style="border: 3px dotted lightgrey; border-bottom: 0px;">
+			<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
+				<div class="input-group" style="width: 95%;">
+					{% csrf_token %}
+					<input name='sended-message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+					<span class="input-group-btn">
+						<button type="submit" class="btn btn-success no-rounded" type="button">Send</button>
+					</span>
+				</div><!-- /input-group -->	
+			</form>
+	</div>            
+    	<div class="col-md-8 bg-white" style="overflow-y: scroll; height: 85vh; border: 3px dotted lightgrey;">
             <div class="chat-message">
                 <ul class="chat">
 					{% if chat_messages %}
@@ -87,18 +115,6 @@
 					{% endif %}
                 </ul>
 			</div>
-            <div class="chat-box bg-white">
-					<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
-            			<div class="input-group">
-							{% csrf_token %}
-							<input name='sended-message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
-							<span class="input-group-btn">
-								<button type="submit" class="btn btn-success no-rounded" type="button">Send</button>
-							</span>
-            			</div><!-- /input-group -->	
-					</form>
-			</div>            
-		</div>        
   </div>
 
 {% else %}
@@ -106,6 +122,19 @@
 {% endif %}
 
 </div>
+
+<script>
+	document.getElementById('NewChatForm').onclick = function() {
+		var butt = document.getElementById("AddNewChatName").style;
+		if (butt.visibility == 'hidden') {
+			butt.visibility = 'visible';
+			document.getElementById("NewChatForm").style.visibility = 'hidden';
+		} else {
+			butt.visibility = 'hidden';
+		}
+	}
+</script>
+
 {% endblock %}
 
 	

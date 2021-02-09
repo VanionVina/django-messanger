@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+
 from imagekit.models import ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill
-
 
 
 class Consumer(models.Model):
@@ -57,5 +57,14 @@ class Message(models.Model):
     sended = models.DateTimeField(auto_created=True, auto_now=True)
 
     def __str__(self):
-        return f'Message from {self.from_user} in {self.chat_room}'
+        return f'Message from "{self.from_user}" to room "{self.chat_room}"'
 
+
+# class PrivateMessage(models.Model):
+#     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
+#     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
+#     text = models.TextField()
+#     sended = models.DateTimeField(auto_created=True, auto_now=True)
+
+#     def __str__(self):
+#         return f'Message from {self.author} to user {self.to_user}'

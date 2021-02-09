@@ -2,7 +2,8 @@ from django.urls import path
 
 from .views import ( ChatRoomView, BaseView,
         UserProfile, ChangeProfile, 
-        ChangeUserAvatar, FriendsView
+        ChangeUserAvatar, FriendsView,
+        CreateNewChat,
         )
 
 app_name = 'messanger'
@@ -14,4 +15,5 @@ urlpatterns = [
     path('change-profile/', ChangeProfile.as_view(), name='change_profile'),
     path('change-user-avatar/', ChangeUserAvatar.as_view(), name='change_user_avatar'),
     path('friends/', FriendsView.as_view(), name='friends'),
+    path('create-new-chat/', CreateNewChat.as_view(), name='create_new_chat')
 ]

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from messanger.forms import ConsumerUpdateProfile, ConsumerChangeAvatar
 from messanger.logic.user_change import change_user_avatar
-from messanger.logic.chat_logic import get_user_chats
+from messanger.logic.chat_logic import get_user_chats, create_chate_room_message, create_new_chat_room
 from messanger.models import Consumer, ChatRoom, Message
 from .mixins import FriendsListMixin
 
@@ -25,13 +25,9 @@ class ChatRoomView(View):
         return render(request, 'chat_room.html', context)
     
     def post(self, request, chat_id):
-        message_text = request.POST.get('sended-message')
+        create_chate_room_message(request, chat_id)
         chat = get_object_or_404(ChatRoom, id=chat_id)
-        if message_text:
-            user = request.user
-            Message.objects.create(from_user=user, chat_room=chat, text=message_text)
         return HttpResponseRedirect(chat.get_absolute_url())
-
 
 
 class BaseView(View):
@@ -91,3 +87,9 @@ class FriendsView(FriendsListMixin, View):
             searched = User.objects.filter(username__icontains=search_qwr)
             context['searched'] = searched
         return render(request, 'friends.html', context)
+
+
+class CreateNewChat(View):
+    def post(self, request):
+        create_new_chat_room(request)
+        return HttpResponseRedirect(reverse('messanger:chat_room'))
