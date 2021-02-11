@@ -5,60 +5,15 @@
 <link rel='stylesheet' href="{% static 'css/chat_room.css' %}"> 
 <div class="container bootstrap snippets bootdey">
 	{% if this_chat %}
-    <div class="row">
-		<div class="col-md-4 bg-white ">
-			<div class=" row border-bottom padding-sm" style="height: 40px;">
-				My chats
-            </div>
-            
-            <!-- =============================================================== -->
-            <!-- member list -->
-            <ul class="friend-list">
-                <!-- <li class="active bounceInDown">
-                	<a href="#" class="clearfix">
-                		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
-                		<div class="friend-name">	
-                			<strong>John Doe</strong>
-                		</div>
-                		<div class="last-message text-muted">Hello, Are you there?</div>
-                		<small class="time text-muted">Just now</small>
-                		<small class="chat-alert label label-danger">1</small>
-                	</a>
-				</li> -->
-				<li>
-						<a class="clearfix">
-							<button class="button btn-success" style="width: 50%;" onclick="NewChatForm" id="NewChatForm">
-							<img src="{% static 'plus.png' %}" style="width: 30px; height: 30px;" alt="Add new" class="img-circle">
-							<div id="AddNewChatText">
-								Add new chat
-							</div>
-							</button>
-							<div style="visibility: hidden;" id="AddNewChatName">
-								<form method="post" action="{% url 'messanger:create_new_chat' %}">
-								{% csrf_token %}
-								<input name='chat_name'>
-								<button type="submit" class="button btn-success">add</button>
-								</form>
-							</div>
-						</a>
-				</li>
-				{% for chat in user_chats %}
-				<li>
-					<a href="{{chat.get_absolute_url}}" class="clearfix">
-						<img src="{{chat.image.url}}" alt="" class="img-circle">
-						<div class="friend-name">	
-							<strong>{{chat.name}}</strong>
-						</div>
-						<!-- <small class="time text-muted"></small> -->
-					<!-- <small class="chat-alert text-muted"><i class="fa fa-check"></i></small> -->
-					</a>
-				</li> 
-				{% endfor %}
-            </ul>
-		</div>
+	{% include 'user_chats.html' %}
         
         <!--=========================================================-->
-        <!-- selected chat -->
+		<!-- selected chat -->
+		<div class="col-md-8" style="border: 1px solid lightblue; background-color: rgb(234, 255, 255);">
+			<a href="{% url 'messanger:chat_room_settings' this_chat.id %}" style="text-decoration: underline; color: darkslategray;">
+				<h5>Chat room settings</h5>
+			</a>
+		</div>
 	<div class="chat-box bg-white col-md-8" style="border: 3px dotted lightgrey; border-bottom: 0px;">
 			<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
 				<div class="input-group" style="width: 95%;">

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<link rel='stylesheet' href="{% static 'css/chat_room.css' %}"> 
+{% include 'user_chats.html' %}
+
+<h1>Settings</h1>
+
+{% endblock %}

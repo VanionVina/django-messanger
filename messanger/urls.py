@@ -3,8 +3,10 @@ from django.urls import path
 from .views import ( ChatRoomView, BaseView,
         UserProfile, ChangeProfile, 
         ChangeUserAvatar, FriendsView,
-        CreateNewChat,
+        CreateNewChat, ChatRoomSettings
         )
+
+from .views import delete_chat_room
 
 app_name = 'messanger'
 urlpatterns = [
@@ -15,5 +17,7 @@ urlpatterns = [
     path('change-profile/', ChangeProfile.as_view(), name='change_profile'),
     path('change-user-avatar/', ChangeUserAvatar.as_view(), name='change_user_avatar'),
     path('friends/', FriendsView.as_view(), name='friends'),
-    path('create-new-chat/', CreateNewChat.as_view(), name='create_new_chat')
+    path('create-new-chat/', CreateNewChat.as_view(), name='create_new_chat'),
+    path('delete-chat-room/<int:room_id>/', delete_chat_room, name='delete_chat_room'),
+    path('room-settings/<int:room_id>/', ChatRoomSettings.as_view(), name='chat_room_settings'),
 ]

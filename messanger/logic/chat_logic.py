@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import get_object_or_404
 
 from messanger.models import Message, ChatRoom
@@ -24,6 +26,7 @@ def create_chate_room_message(request, chat_id):
 
 def create_new_chat_room(request):
     name = request.POST.get('chat_name')
+    name = re.sub('^ ', '', re.sub('\s+', ' ', name))
     if name:
         chat = ChatRoom.objects.create(name=name)
         chat.users.add(request.user)

@@ -30,6 +30,24 @@ class ChatRoomView(View):
         return HttpResponseRedirect(chat.get_absolute_url())
 
 
+class FriendsView(FriendsListMixin, View):
+    def get(self, request):
+        context = {
+                'friends': self.friends,
+                }
+        return render(request, 'friends.html', context)
+
+    def post(self, request):
+        context = {
+            'friends': self.friends,
+        }
+        search_qwr = request.POST.get('search-friends')
+        if search_qwr:
+            searched = User.objects.filter(username__icontains=search_qwr)
+            context['searched'] = searched
+        return render(request, 'friends.html', context)
+
+
 class BaseView(View):
     def get(self, request):
         return render(request, 'base.html')
@@ -71,25 +89,22 @@ class ChangeUserAvatar(View):
         return render(request, 'user_profile_change.html', context={'form': form})
 
 
-class FriendsView(FriendsListMixin, View):
-    def get(self, request):
-        context = {
-                'friends': self.friends,
-                }
-        return render(request, 'friends.html', context)
-
-    def post(self, request):
-        context = {
-            'friends': self.friends,
-        }
-        search_qwr = request.POST.get('search-friends')
-        if search_qwr:
-            searched = User.objects.filter(username__icontains=search_qwr)
-            context['searched'] = searched
-        return render(request, 'friends.html', context)
-
-
 class CreateNewChat(View):
     def post(self, request):
         create_new_chat_room(request)
         return HttpResponseRedirect(reverse('messanger:chat_room'))
+
+
+class ChatRoomSettings(View):
+    def get(self, request, room_id):
+        user_chats = ChatRoom.objects.filter(users=request.user)
+        context = {
+            'user_chats': user_chats,
+        }
+        return render(request, 'chat_room_settings.html', context)
+
+
+def delete_chat_room(request, room_id):
+    room = get_object_or_404(ChatRoom, id=room_id)
+    room.delete()
+    return HttpResponseRedirect(reverse('messanger:chat_room'))
