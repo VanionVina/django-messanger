@@ -1,10 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load crispy_forms_tags %}
 {% load static %}
 
 <link rel='stylesheet' href="{% static 'css/chat_room.css' %}"> 
 {% include 'user_chats.html' %}
 
-<h1>Settings</h1>
+  <div class="col-md-3">
+    <button id="button-sure" onclick="show_sure()" class="button btn-danger">Delete chat</button>
+    <div style="visibility: hidden" id="are-you-sure">
+        <p style="font-size: 20px;">
+          Are you sure?   <a style="color: red;" href="{% url 'messanger:delete_chat_room' this_chat.id %}">yes</a>
+        </p>
+    </div>
+  </div>
+  <br>
 
+
+
+  <div class="col-md-8">
+  <h1>Settings</h1>
+      <div class="col-md-6">
+      <form method="POST" action="">
+        {% csrf_token %}
+        <h3>{{settings.name.label}} : {{settings.name}}</h3>
+        <button class="button btn-success btn-lg" type="submit">Save changes</button>
+      </form>
+      </div>
+      <div class="col-md-3">
+        <h4>Change chat image : {{settings.image}}</h4>
+      </div>
+  </div>
+
+<script>
+  document.getElementById('id_name').value = "{{this_chat.name}}";
+  var are_you = document.getElementById('are-you-sure')
+  document.getElementById('button-sure').onclick = function() {
+    if (are_you.style.visibility == 'hidden') {
+        are_you.style.visibility  = 'visible';
+    } else {
+        are_you.style.visibility  = 'hidden';
+    }
+  }
+</script>
 {% endblock %}

@@ -3,9 +3,9 @@ from django.urls import reverse
 from django.views.generic import View
 from django.contrib.auth.models import User
 
-from messanger.forms import ConsumerUpdateProfile, ConsumerChangeAvatar
+from messanger.forms import ConsumerUpdateProfile, ConsumerChangeAvatar, ChatRoomSettingsForm
 from messanger.logic.user_change import change_user_avatar
-from messanger.logic.chat_logic import get_user_chats, create_chate_room_message, create_new_chat_room
+from messanger.logic.chat_logic import get_user_chats, create_chate_room_message, create_new_chat_room, save_chat_settings
 from messanger.models import Consumer, ChatRoom, Message
 from .mixins import FriendsListMixin
 
@@ -98,10 +98,21 @@ class CreateNewChat(View):
 class ChatRoomSettings(View):
     def get(self, request, room_id):
         user_chats = ChatRoom.objects.filter(users=request.user)
+        this_chat = get_object_or_404(ChatRoom, id=room_id)
+        settings = ChatRoomSettingsForm
         context = {
             'user_chats': user_chats,
+            'this_chat': this_chat,
+            'settings': settings,
         }
         return render(request, 'chat_room_settings.html', context)
+
+    def post(self, request, room_id):
+        form = ChatRoomSettingsForm(request.POST)
+        if form.is_valid():
+            save_chat_settings(form, room_id)
+            return HttpResponseRedirect(reverse('messanger:chat_room'))
+        return render(request, 'chat_room_settings.html', context={'settings': form})
 
 
 def delete_chat_room(request, room_id):

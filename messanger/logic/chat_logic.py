@@ -31,3 +31,11 @@ def create_new_chat_room(request):
         chat = ChatRoom.objects.create(name=name)
         chat.users.add(request.user)
         chat.save()
+
+def save_chat_settings(form, room_id):
+    chat = get_object_or_404(ChatRoom, id=room_id)
+    name = form.cleaned_data.get('name')
+    name = re.sub('^ ', '', re.sub('\s+', ' ', name))
+    if name:
+        chat.name = name
+        chat.save()

@@ -48,3 +48,15 @@
 				{% endfor %}
             </ul>
 		</div>
+
+<script>
+	document.getElementById('NewChatForm').onclick = function() {
+		var butt = document.getElementById("AddNewChatName").style;
+		if (butt.visibility == 'hidden') {
+			butt.visibility = 'visible';
+			document.getElementById("NewChatForm").style.visibility = 'hidden';
+		} else {
+			butt.visibility = 'hidden';
+		}
+	}
+</script>

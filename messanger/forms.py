@@ -3,7 +3,7 @@ from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
 
-from messanger.models import Consumer
+from messanger.models import Consumer, ChatRoom
 
 
 class ConsumerUpdateProfile(forms.ModelForm):
@@ -53,3 +53,10 @@ class ConsumerUpdateProfile(forms.ModelForm):
 
 class ConsumerChangeAvatar(forms.Form):
     avatar = forms.ImageField()
+
+
+class ChatRoomSettingsForm(forms.ModelForm):
+
+    class Meta:
+        model = ChatRoom
+        exclude = ['users', ]
