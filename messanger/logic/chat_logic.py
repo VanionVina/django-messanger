@@ -39,3 +39,9 @@ def save_chat_settings(form, room_id):
     if name:
         chat.name = name
         chat.save()
+
+def save_chat_image(form, room_id):
+    chat = get_object_or_404(ChatRoom, id=room_id)
+    image = form.cleaned_data['image']
+    chat.image = image
+    chat.save()

@@ -27,9 +27,14 @@
         <button class="button btn-success btn-lg" type="submit">Save changes</button>
       </form>
       </div>
-      <div class="col-md-3">
-        <h4>Change chat image : {{settings.image}}</h4>
-      </div>
+      <form enctype="multipart/form-data" method="POST" action="{% url 'messanger:chat_room_change_image' this_chat.id %}">
+        {% csrf_token %}
+        <div class="col-md-3">
+          <h4>{{change_image}}</h4>
+          <br>
+          <button type="submit" class="button btn-primary">Change image</button>
+        </div>
+      <form>
   </div>
 
 <script>

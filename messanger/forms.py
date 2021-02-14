@@ -56,7 +56,10 @@ class ConsumerChangeAvatar(forms.Form):
 
 
 class ChatRoomSettingsForm(forms.ModelForm):
-
     class Meta:
         model = ChatRoom
         exclude = ['users', ]
+
+
+class ChatRoomChangeAvatar(forms.Form):
+    image = forms.ImageField()

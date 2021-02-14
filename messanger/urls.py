@@ -3,7 +3,8 @@ from django.urls import path
 from .views import ( ChatRoomView, BaseView,
         UserProfile, ChangeProfile, 
         ChangeUserAvatar, FriendsView,
-        CreateNewChat, ChatRoomSettings
+        CreateNewChat, ChatRoomSettings,
+        ChatRoomChangeImage,
         )
 
 from .views import delete_chat_room
@@ -20,4 +21,5 @@ urlpatterns = [
     path('create-new-chat/', CreateNewChat.as_view(), name='create_new_chat'),
     path('delete-chat-room/<int:room_id>/', delete_chat_room, name='delete_chat_room'),
     path('room-settings/<int:room_id>/', ChatRoomSettings.as_view(), name='chat_room_settings'),
+    path('chat-room-image/<int:room_id>/', ChatRoomChangeImage.as_view(), name='chat_room_change_image'),
 ]

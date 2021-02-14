@@ -3,9 +3,16 @@ from django.urls import reverse
 from django.views.generic import View
 from django.contrib.auth.models import User
 
-from messanger.forms import ConsumerUpdateProfile, ConsumerChangeAvatar, ChatRoomSettingsForm
+from messanger.forms import (
+        ConsumerUpdateProfile, ConsumerChangeAvatar,
+        ChatRoomSettingsForm, ChatRoomChangeAvatar
+        )
 from messanger.logic.user_change import change_user_avatar
-from messanger.logic.chat_logic import get_user_chats, create_chate_room_message, create_new_chat_room, save_chat_settings
+from messanger.logic.chat_logic import (
+        get_user_chats, create_chate_room_message,
+        create_new_chat_room, save_chat_settings,
+        save_chat_image
+        )
 from messanger.models import Consumer, ChatRoom, Message
 from .mixins import FriendsListMixin
 
@@ -100,10 +107,12 @@ class ChatRoomSettings(View):
         user_chats = ChatRoom.objects.filter(users=request.user)
         this_chat = get_object_or_404(ChatRoom, id=room_id)
         settings = ChatRoomSettingsForm
+        change_image = ChatRoomChangeAvatar
         context = {
             'user_chats': user_chats,
             'this_chat': this_chat,
             'settings': settings,
+            'change_image': change_image,
         }
         return render(request, 'chat_room_settings.html', context)
 
@@ -112,6 +121,15 @@ class ChatRoomSettings(View):
         if form.is_valid():
             save_chat_settings(form, room_id)
             return HttpResponseRedirect(reverse('messanger:chat_room'))
+        return render(request, 'chat_room_settings.html', context={'settings': form})
+
+
+class ChatRoomChangeImage(View):
+    def post(self, request, room_id):
+        form = ChatRoomChangeAvatar(request.POST, request.FILES)
+        if form.is_valid():
+            save_chat_image(form, room_id)
+            return HttpResponseRedirect(reverse('messanger:chat_room_settings', kwargs={'room_id': room_id}))
         return render(request, 'chat_room_settings.html', context={'settings': form})
 
 
