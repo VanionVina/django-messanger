@@ -14,7 +14,7 @@
   {% if searched %}
   <br>
     {% for buddy in searched %}
-      <div class='col-md-6'>
+      <div class='col-md-2'>
        <a href="{{buddy.consumer.get_absolute_url}}">
          <img src="{{buddy.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
        {{buddy.username}}
@@ -34,10 +34,10 @@
    <h1>My friends</h1>
 
     {% for friend in friends %}
-      <div class="col-md-6">
+      <div class="col-md-3">
         <div>
           <a href={{friend.get_absolute_url}}>
-            <img src="{{ friend.avatar.url }}" style="width: 90px;">
+            <img src="{{ friend.avatar.url }}" style="width: 110px; border-radius: 50%;">
             <span style="font-size: 25px;">{{friend.user.username}}</span>
           </a>
         </div>

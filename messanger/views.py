@@ -137,3 +137,15 @@ def delete_chat_room(request, room_id):
     room = get_object_or_404(ChatRoom, id=room_id)
     room.delete()
     return HttpResponseRedirect(reverse('messanger:chat_room'))
+
+
+class AddFriendToChatView(View):
+    def get(self, request, room_id):
+        chat = get_object_or_404(ChatRoom, id=room_id)
+        friends = request.user.consumer.friends.all()
+        context = {
+            'friends': friends,
+            'chat': chat,
+        }
+        return render(request, 'add_friend_to_chat.html', context)
+

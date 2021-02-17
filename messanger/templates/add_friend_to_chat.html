@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-12">
+<h2>Members</h2>
+{% for member in chat.users.all %}
+  <div class='col-md-2'>
+    <a href="{{member.consumer.get_absolute_url}}">
+    <img src="{{member.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
+    {{member.username}}
+    </a>
+ </div>
+{% endfor %}
+</div>
+
+
+<div class="col-md-12">
+<h2>Add user</h2>
+{% for friend in friends %}
+  <div class='col-md-3'>
+    <button id="add_friend_sure" onclick="function_sure('{{friend.user.id}}')" style="border: none; background-color: white;">
+      <img src="{{friend.avatar.url}}" style="width: 100px; border-radius: 50%;">
+      <span style="color: lightskyblue">{{friend.user.username}}</span>
+      <div id="are_u_sure_{{friend.user.id}}" style="visibility: hidden;">
+          Are you sure? <a style="color: green; text-decoration: underline;" href="#"> yes</a>
+      </div>
+  </button>
+ </div>
+{% endfor %}
+</div>
+
+<script>
+    function function_sure(id) {
+        let user_id = "are_u_sure_" + id;
+        let sure = document.getElementById(user_id);
+        if (sure.style.visibility == 'hidden') {
+            sure.style.visibility = 'visible';
+        } else {
+            sure.style.visibility = 'hidden';
+        };
+    };
+</script>
+{% endblock %}
