@@ -40,6 +40,7 @@ class ChatRoom(models.Model):
                                 default='chats/default.jpg')
     users = models.ManyToManyField(User)
     created = models.DateTimeField(auto_now=True, auto_created=True)
+    moderators = models.ManyToManyField(User, related_name='modeators')
 
     def __str__(self):
         return self.name

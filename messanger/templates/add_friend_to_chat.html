@@ -1,43 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
 
+ 
+<!-- .modal -->
+<div class="modal fade" id="Mymodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+                	&times;
+                </button> 
+				<h4 class="modal-title">
+                	Add friend to chat
+                </h4>                                                             
+			</div> 
+			<div class="modal-body">
+              {% for friend in friends %}
+
+              <div class='col-md-12'>
+                <button id="add_friend_sure" onclick="function_sure('{{friend.user.id}}')" style="border: none; background-color: white;">
+                    <img src="{{friend.avatar.url}}" style="width: 100px; border-radius: 50%;">
+                    <span style="color: lightskyblue">{{friend.user.username}}</span>
+                </button>
+                <a href="{% url 'messanger:add_to_chat' chat.id friend.id %}">
+                <button class="button btn-success" style="float: right;">Add this user</button>
+                </a>
+               </div>
+
+              {% endfor %}
+			</div>   
+			<div class="modal-footer">
+			</div>
+		</div>                                                                       
+	</div>                                      
+</div>
+
+
 <div class="col-md-12">
 <h2>Members</h2>
-{% for member in chat.users.all %}
-  <div class='col-md-2'>
-    <a href="{{member.consumer.get_absolute_url}}">
-    <img src="{{member.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
-    {{member.username}}
-    </a>
- </div>
-{% endfor %}
+
+<!-- .Launch Modal Button-->
+<div class="col-md-2">
+    <button style="background-color: lightblue; border: none; border-radius: 50%; width: 100px; height: 100px;" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#Mymodal">
+        <span style="font-size: 60px;">
+        +
+        </span>
+    </button>
+    </div>
+
+    {% for member in chat.users.all %}
+      <div class='col-md-2'>
+        <a href="{{member.consumer.get_absolute_url}}">
+        <img src="{{member.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
+        {{member.username}}
+        </a>
+     </div>
+    {% endfor %}
 </div>
 
 
-<div class="col-md-12">
-<h2>Add user</h2>
-{% for friend in friends %}
-  <div class='col-md-3'>
-    <button id="add_friend_sure" onclick="function_sure('{{friend.user.id}}')" style="border: none; background-color: white;">
-      <img src="{{friend.avatar.url}}" style="width: 100px; border-radius: 50%;">
-      <span style="color: lightskyblue">{{friend.user.username}}</span>
-      <div id="are_u_sure_{{friend.user.id}}" style="visibility: hidden;">
-          Are you sure? <a style="color: green; text-decoration: underline;" href="#"> yes</a>
-      </div>
-  </button>
- </div>
-{% endfor %}
-</div>
-
-<script>
-    function function_sure(id) {
-        let user_id = "are_u_sure_" + id;
-        let sure = document.getElementById(user_id);
-        if (sure.style.visibility == 'hidden') {
-            sure.style.visibility = 'visible';
-        } else {
-            sure.style.visibility = 'hidden';
-        };
-    };
-</script>
 {% endblock %}

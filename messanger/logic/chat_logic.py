@@ -30,6 +30,7 @@ def create_new_chat_room(request):
     if name:
         chat = ChatRoom.objects.create(name=name)
         chat.users.add(request.user)
+        chat.moderators.add(request.user)
         chat.save()
 
 def save_chat_settings(form, room_id):

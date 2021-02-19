@@ -37,6 +37,18 @@
       <form>
   </div>
 
+<div class="col-md-8">
+    <h2>Moderators</h2>
+    {% for moderator in this_chat.moderators.all %}
+      <div class='col-md-2'>
+        <a href="{{moderator.consumer.get_absolute_url}}">
+        <img src="{{moderator.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
+        {{moderator.username}}
+        </a>
+     </div>
+    {% endfor %}
+</div>
+
 <script>
   document.getElementById('id_name').value = "{{this_chat.name}}";
   var are_you = document.getElementById('are-you-sure')

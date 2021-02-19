@@ -14,11 +14,13 @@
 					<button class="button btn-success btn-lg">Members</button>
 				</a>
 			</div>
-			<div style="border: 1px solid lightblue; background-color: rgb(234, 255, 255);">
+            {% if user in this_chat.moderators.all %}
+			<div>
 				<a href="{% url 'messanger:chat_room_settings' this_chat.id %}" style="text-decoration: underline; color: darkslategray;">
-					<h5>Chat room settings</h5>
+					<p style="font-size: 20px">Chat room settings</p>
 				</a>
 			</div>
+            {% endif %}
 	<div class="chat-box bg-white col-md-8" style="border: 3px dotted lightgrey; border-bottom: 0px;">
 			<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
 				<div class="input-group" style="width: 95%;">

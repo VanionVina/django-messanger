@@ -7,7 +7,7 @@ from .views import ( ChatRoomView, BaseView,
         ChatRoomChangeImage, AddFriendToChatView
         )
 
-from .views import delete_chat_room
+from .views import delete_chat_room, add_friend_to_chat
 
 app_name = 'messanger'
 urlpatterns = [
@@ -23,4 +23,5 @@ urlpatterns = [
     path('room-settings/<int:room_id>/', ChatRoomSettings.as_view(), name='chat_room_settings'),
     path('chat-room-image/<int:room_id>/', ChatRoomChangeImage.as_view(), name='chat_room_change_image'),
     path('add-friend-to-chat/<int:room_id>/', AddFriendToChatView.as_view(), name="add_friend_to_chat"),
+    path('add-to-chat/<int:room_id>/<int:friend_id>/', add_friend_to_chat, name='add_to_chat'),
 ]

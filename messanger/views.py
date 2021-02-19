@@ -149,3 +149,10 @@ class AddFriendToChatView(View):
         }
         return render(request, 'add_friend_to_chat.html', context)
 
+
+def add_friend_to_chat(request, friend_id, room_id):
+    chat = get_object_or_404(ChatRoom, id=room_id)
+    friend = get_object_or_404(Consumer, id=friend_id)
+    chat.users.add(friend.user)
+    chat.save()
+    return HttpResponseRedirect(reverse('messanger:chat_room', kwargs={'chat_id': chat.id}))
