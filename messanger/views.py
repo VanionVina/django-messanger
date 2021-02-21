@@ -155,4 +155,20 @@ def add_friend_to_chat(request, friend_id, room_id):
     friend = get_object_or_404(Consumer, id=friend_id)
     chat.users.add(friend.user)
     chat.save()
-    return HttpResponseRedirect(reverse('messanger:chat_room', kwargs={'chat_id': chat.id}))
+    return HttpResponseRedirect(reverse('messanger:add_friend_to_chat', kwargs={'room_id': chat.id}))
+
+
+def give_moderator_priveleges(requets, user_id, room_id):
+    chat = get_object_or_404(ChatRoom, id=room_id)
+    user = get_object_or_404(User, id=user_id)
+    chat.moderators.add(user)
+    chat.save()
+    return HttpResponseRedirect(reverse('messanger:chat_room_settings', kwargs={'room_id': room_id}))
+
+
+def kick_user_from_room(request, user_id, room_id):
+    chat = get_object_or_404(ChatRoom, id=room_id)
+    user = get_object_or_404(User, id=user_id)
+    chat.users.remove(user)
+    chat.save()
+    return HttpResponseRedirect(reverse('messanger:add_friend_to_chat', kwargs={'room_id': room_id}))

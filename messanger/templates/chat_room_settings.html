@@ -34,11 +34,59 @@
           <br>
           <button type="submit" class="button btn-primary">Change image</button>
         </div>
-      <form>
+      </form>
   </div>
+
+
+<div class="modal fade" id="Mymodal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+                	&times;
+                </button> 
+				<h4 class="modal-title">
+                	Give moderator privileges
+                </h4>                                                             
+			</div> 
+			<div class="modal-body">
+              {% for buddy in this_chat.users.all %}
+                  {% if buddy != request.user %}
+
+                  <div class='col-md-12'>
+                        <a href="{{buddy.consumer.get_absolute_url}}">
+                        <img src="{{buddy.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
+                        <span style="color: lightskyblue">{{user.username}}</span>
+                        </a>
+                    {% if buddy in this_chat.moderators.all %}
+                    <span style="float: right;">Moderator<span>
+                    {% else %}
+                    <a href="{% url 'messanger:give_mod_priv' this_chat.id buddy.id %}">
+                    <button class="button btn-success" style="float: right;">Add privileges</button>
+                    </a>
+                    {% endif %}
+                   </div>
+                   {% endif %}
+              {% endfor %}
+			</div>   
+			<div class="modal-footer">
+			</div>
+		</div>                                                                       
+	</div>                                      
+</div>
+
 
 <div class="col-md-8">
     <h2>Moderators</h2>
+
+    <div class="col-md-2">
+        <button style="background-color: lightblue; border: none; border-radius: 50%; width: 100px; height: 100px;" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#Mymodal">
+            <span style="font-size: 60px;">
+            +
+            </span>
+        </button>
+    </div>
+
     {% for moderator in this_chat.moderators.all %}
       <div class='col-md-2'>
         <a href="{{moderator.consumer.get_absolute_url}}">
@@ -47,6 +95,7 @@
         </a>
      </div>
     {% endfor %}
+
 </div>
 
 <script>

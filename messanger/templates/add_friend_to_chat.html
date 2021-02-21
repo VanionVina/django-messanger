@@ -22,10 +22,15 @@
                     <img src="{{friend.avatar.url}}" style="width: 100px; border-radius: 50%;">
                     <span style="color: lightskyblue">{{friend.user.username}}</span>
                 </button>
+                {% if friend.user in chat.users.all %}
+                <span style="float: right;">In this room<span>
+                {% else %}
                 <a href="{% url 'messanger:add_to_chat' chat.id friend.id %}">
                 <button class="button btn-success" style="float: right;">Add this user</button>
                 </a>
+                {% endif %}
                </div>
+
 
               {% endfor %}
 			</div>   
@@ -54,9 +59,27 @@
         <img src="{{member.consumer.avatar.url}}" style="width: 100px; border-radius: 50%;">
         {{member.username}}
         </a>
+        {% if member != request.user and request.user in chat.moderators.all %}
+        <button id="button-sure" onclick="something(member_id='{{member.id}}')" style="float: right; border: none; background-color: white;">
+        <span style="color: red;">kick user</span>
+        </button>
+        <div style="visibility: hidden;" id='are_u_sure_{{member.id}}'>
+        <span style="float: right;">Are you sure?   <a href="{% url 'messanger:kick_user_from_room' chat.id member.id %}" style="color: red;">yes</a></span>
+        </div>
+        {% endif %}
      </div>
     {% endfor %}
 </div>
 
+<script>
+  function something(member_id) {
+    var warn = document.getElementById('are_u_sure_' + member_id)
+    if (warn.style.visibility == 'hidden') {
+        warn.style.visibility  = 'visible';
+    } else {
+        warn.style.visibility  = 'hidden';
+    }
+  }
+</script>
 
 {% endblock %}

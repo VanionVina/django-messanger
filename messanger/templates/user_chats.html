@@ -37,7 +37,7 @@
 						</a>
 				</li>
 				{% for chat in user_chats %}
-				<li>
+				<li {% if this_chat == chat %} class="active bounceInDown" {% endif %}>
 					<a href="{{chat.get_absolute_url}}" class='clearfix'>
 						<img src="{{chat.image.url}}" alt="" class="img-circle">
 						<div class="friend-name">	

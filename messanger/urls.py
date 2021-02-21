@@ -7,7 +7,7 @@ from .views import ( ChatRoomView, BaseView,
         ChatRoomChangeImage, AddFriendToChatView
         )
 
-from .views import delete_chat_room, add_friend_to_chat
+from .views import delete_chat_room, add_friend_to_chat, give_moderator_priveleges, kick_user_from_room
 
 app_name = 'messanger'
 urlpatterns = [
@@ -24,4 +24,6 @@ urlpatterns = [
     path('chat-room-image/<int:room_id>/', ChatRoomChangeImage.as_view(), name='chat_room_change_image'),
     path('add-friend-to-chat/<int:room_id>/', AddFriendToChatView.as_view(), name="add_friend_to_chat"),
     path('add-to-chat/<int:room_id>/<int:friend_id>/', add_friend_to_chat, name='add_to_chat'),
+    path('give-moderator-priveleges/<int:room_id>/<int:user_id>/', give_moderator_priveleges, name='give_mod_priv'),
+    path('kick-user/<int:room_id>/<int:user_id>/', kick_user_from_room, name='kick_user_from_room'),
 ]
