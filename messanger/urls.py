@@ -1,19 +1,21 @@
 from django.urls import path
 
-from .views import ( ChatRoomView, BaseView,
+from .views import ( ChatRoomView, 
         UserProfile, ChangeProfile, 
         ChangeUserAvatar, FriendsView,
         CreateNewChat, ChatRoomSettings,
         ChatRoomChangeImage, AddFriendToChatView
         )
 
-from .views import delete_chat_room, add_friend_to_chat, give_moderator_priveleges, kick_user_from_room
+from .views import ( delete_chat_room, add_friend_to_chat, give_moderator_priveleges,
+                     kick_user_from_room, send_friend_request, delete_notification,
+                     answer_to_friend_request,
+                     )
 
 app_name = 'messanger'
 urlpatterns = [
     path('chat-room/', ChatRoomView.as_view(), name='chat_room'),
     path('chat-room/<str:chat_id>/', ChatRoomView.as_view(), name='chat_room'),
-    path('base/', BaseView.as_view(), name='base'),
     path('user-profile/<str:user_id>/', UserProfile.as_view(), name='user_profile'),
     path('change-profile/', ChangeProfile.as_view(), name='change_profile'),
     path('change-user-avatar/', ChangeUserAvatar.as_view(), name='change_user_avatar'),
@@ -26,4 +28,7 @@ urlpatterns = [
     path('add-to-chat/<int:room_id>/<int:friend_id>/', add_friend_to_chat, name='add_to_chat'),
     path('give-moderator-priveleges/<int:room_id>/<int:user_id>/', give_moderator_priveleges, name='give_mod_priv'),
     path('kick-user/<int:room_id>/<int:user_id>/', kick_user_from_room, name='kick_user_from_room'),
+    path('send-friend/<int:from_user_id>/<int:to_user_id>/', send_friend_request, name='send_friend_request'),
+    path('delete-notification/<int:notification_id>/', delete_notification, name='del_notification'),
+    path('answer-to-friend-request/<int:notification_id>/<str:answer>/', answer_to_friend_request, name='answer_friend_request'),
 ]

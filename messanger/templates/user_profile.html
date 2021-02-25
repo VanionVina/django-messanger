@@ -13,7 +13,9 @@
                     {% elif user_c == user %}
                         <!-- Nothin here -->
                     {% else %}
+                    <a href="{% url 'messanger:send_friend_request' request.user.id user_c.id %}">
                         <button class="button btn-success">Add to friends</button>
+                    </a>
                     {% endif %}
 
                     {% if user != user_c %}

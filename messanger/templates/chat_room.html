@@ -9,11 +9,12 @@
         
         <!--=========================================================-->
 		<!-- selected chat -->
-			<div class="col-mt-8">
+			<div class="col-md-8">
 				<a href="{% url 'messanger:add_friend_to_chat' this_chat.id%}" style="text-decoration: underline; color: green; float: right;">
 					<button class="button btn-success btn-lg">Members</button>
 				</a>
 			</div>
+			<br><br><br>
             {% if user in this_chat.moderators.all %}
 			<div>
 				<a href="{% url 'messanger:chat_room_settings' this_chat.id %}" style="text-decoration: underline; color: darkslategray;">

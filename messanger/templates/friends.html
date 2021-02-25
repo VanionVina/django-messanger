@@ -41,6 +41,17 @@
             <span style="font-size: 25px;">{{friend.user.username}}</span>
           </a>
         </div>
+
+        <div style="visibility: visible" id="btn_{{friend.id}}">
+          <button style="border: None; background-color: white;" onclick="are_u_sure('{{friend_id}}')">
+            <span style="color: red;">Delete from friends</span>
+          </button>
+        </div>
+        <div style="visibility: hidden;" id='sure_{{friend.id}}'>
+          <button style="border: None; background-color: white;"><a href="#">No</a></button>
+          <a href="#">Yes</a>
+        </div>
+        
       </div>
     {% endfor %}
 
@@ -48,5 +59,10 @@
       <h2>You have no friends</h2>
   {% endif %}
 </div>
+
+<script>
+  function are_u_sure
+</script>
+
 
 {% endblock %}

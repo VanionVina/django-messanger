@@ -13,21 +13,25 @@ from messanger.logic.chat_logic import (
         create_new_chat_room, save_chat_settings,
         save_chat_image
         )
-from messanger.models import Consumer, ChatRoom, Message
-from .mixins import FriendsListMixin
+from messanger.models import Consumer, ChatRoom, Message, AddToFriendNotification
+from .mixins import FriendsListMixin, NotificationsMixin
 
 
-class ChatRoomView(View):
+class ChatRoomView(NotificationsMixin, View):
     def get(self, request, **kwargs):
         chat_id = kwargs.get('chat_id')
         consumer = get_object_or_404(Consumer, user=request.user)
         user_chats = ChatRoom.objects.filter(users=request.user)
         this_chat, chat_messages = get_user_chats(user_chats, chat_id)
+        if request.user not in this_chat.users.all():
+            return HttpResponseRedirect(reverse('messanger:chat_room'))
         context = {
             'consumer': consumer,
             'user_chats': user_chats,
             'this_chat': this_chat,
             'chat_messages': chat_messages,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
         }
         return render(request, 'chat_room.html', context)
     
@@ -37,10 +41,12 @@ class ChatRoomView(View):
         return HttpResponseRedirect(chat.get_absolute_url())
 
 
-class FriendsView(FriendsListMixin, View):
+class FriendsView(FriendsListMixin, NotificationsMixin, View):
     def get(self, request):
         context = {
                 'friends': self.friends,
+                'notifications': self.notifications,
+                'notif_to_me': self.notif_to_me,
                 }
         return render(request, 'friends.html', context)
 
@@ -55,27 +61,26 @@ class FriendsView(FriendsListMixin, View):
         return render(request, 'friends.html', context)
 
 
-class BaseView(View):
-    def get(self, request):
-        return render(request, 'base.html')
-
-
-class UserProfile(View):
+class UserProfile(NotificationsMixin, View):
     def get(self, request, user_id):
         user_c = get_object_or_404(User, id=user_id)
         context = {
             'user_c': user_c,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
         }
         return render(request, 'user_profile.html', context)
 
 
-class ChangeProfile(View):
+class ChangeProfile(NotificationsMixin, View):
     def get(self, request):
         form = ConsumerUpdateProfile
         form_image = ConsumerChangeAvatar
         context = {
             'form': form,
             'form_image': form_image,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
         }
         return render (request, 'user_profile_change.html', context)
 
@@ -102,7 +107,7 @@ class CreateNewChat(View):
         return HttpResponseRedirect(reverse('messanger:chat_room'))
 
 
-class ChatRoomSettings(View):
+class ChatRoomSettings(NotificationsMixin, View):
     def get(self, request, room_id):
         user_chats = ChatRoom.objects.filter(users=request.user)
         this_chat = get_object_or_404(ChatRoom, id=room_id)
@@ -113,6 +118,8 @@ class ChatRoomSettings(View):
             'this_chat': this_chat,
             'settings': settings,
             'change_image': change_image,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
         }
         return render(request, 'chat_room_settings.html', context)
 
@@ -139,13 +146,15 @@ def delete_chat_room(request, room_id):
     return HttpResponseRedirect(reverse('messanger:chat_room'))
 
 
-class AddFriendToChatView(View):
+class AddFriendToChatView(NotificationsMixin, View):
     def get(self, request, room_id):
         chat = get_object_or_404(ChatRoom, id=room_id)
         friends = request.user.consumer.friends.all()
         context = {
             'friends': friends,
             'chat': chat,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
         }
         return render(request, 'add_friend_to_chat.html', context)
 
@@ -169,6 +178,40 @@ def give_moderator_priveleges(requets, user_id, room_id):
 def kick_user_from_room(request, user_id, room_id):
     chat = get_object_or_404(ChatRoom, id=room_id)
     user = get_object_or_404(User, id=user_id)
+    if user in chat.moderators.all():
+        chat.moderators.remove(user)
     chat.users.remove(user)
     chat.save()
     return HttpResponseRedirect(reverse('messanger:add_friend_to_chat', kwargs={'room_id': room_id}))
+
+
+def send_friend_request(request, from_user_id, to_user_id):
+    send_from = get_object_or_404(User, id=from_user_id)
+    send_to = get_object_or_404(User, id=to_user_id)
+    AddToFriendNotification.objects.create(send_from=send_from, send_to=send_to)
+    return HttpResponseRedirect(reverse('messanger:chat_room'))
+
+
+def answer_to_friend_request(request, notification_id, answer):
+    notification = get_object_or_404(AddToFriendNotification, id=notification_id)
+    notification.agreed = answer
+    notification.save()
+    print(notification.agreed)
+    if notification.agreed:
+        from_user = notification.send_from
+        request.user.consumer.friends.add(from_user.consumer)
+        from_user.consumer.friends.add(request.user.consumer)
+    return HttpResponseRedirect('/')
+
+
+def delete_notification(request, notification_id):
+    notification = get_object_or_404(AddToFriendNotification, id=notification_id)
+    notification.delete()
+    return HttpResponseRedirect('/')
+
+def delete_friend(request, friend_id):
+    for friend in request.user.consumer.friends.all():
+        if friend.user.id == friend.id:
+            request.user.consumer.friends.remove(friend)
+            break
+    return HttpResponseRedirect(reverse('messanger:friends'))

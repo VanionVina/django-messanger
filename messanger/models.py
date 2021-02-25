@@ -61,11 +61,11 @@ class Message(models.Model):
         return f'Message from "{self.from_user}" to room "{self.chat_room}"'
 
 
-# class PrivateMessage(models.Model):
-#     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
-#     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='to_user')
-#     text = models.TextField()
-#     sended = models.DateTimeField(auto_created=True, auto_now=True)
+class AddToFriendNotification(models.Model):
+    send_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name='send_from')
+    send_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='send_to')
+    agreed = models.BooleanField(null=True, blank=True)
+    date_sended = models.DateTimeField(auto_now=True, auto_created=True)
 
-#     def __str__(self):
-#         return f'Message from {self.author} to user {self.to_user}'
+    def __str__(self):
+        return f"Friend request from {self.send_from} to {self.send_to}"

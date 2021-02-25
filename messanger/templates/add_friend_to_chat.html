@@ -15,9 +15,9 @@
                 </h4>                                                             
 			</div> 
 			<div class="modal-body">
-              {% for friend in friends %}
 
-              <div class='col-md-12'>
+              {% for friend in friends %}
+               <div class='col-md-12'>
                 <button id="add_friend_sure" onclick="function_sure('{{friend.user.id}}')" style="border: none; background-color: white;">
                     <img src="{{friend.avatar.url}}" style="width: 100px; border-radius: 50%;">
                     <span style="color: lightskyblue">{{friend.user.username}}</span>
@@ -30,9 +30,8 @@
                 </a>
                 {% endif %}
                </div>
-
-
               {% endfor %}
+
 			</div>   
 			<div class="modal-footer">
 			</div>
