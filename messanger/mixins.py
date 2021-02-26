@@ -13,4 +13,16 @@ class NotificationsMixin(View):
     def dispatch(self, request, *args, **kwargs):
         self.notifications = AddToFriendNotification.objects.filter(send_from=request.user)
         self.notif_to_me = AddToFriendNotification.objects.filter(send_to=request.user)
+        self.all_notif = 0
+        for notif in self.notif_to_me:
+            if notif.agreed != False and notif.agreed != True:
+                self.all_notif += 1
+        for notif in self.notifications:
+            if notif.agreed == False or notif.agreed == True:
+                self.all_notif += 1
+        self.context_notif = {
+            'all_notif': self.all_notif,
+            'notifications': self.notifications,
+            'notif_to_me': self.notif_to_me,
+        }
         return super().dispatch(request, *args, **kwargs)

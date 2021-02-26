@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.views.generic import View
 from django.contrib.auth.models import User
 
+
 from messanger.forms import (
         ConsumerUpdateProfile, ConsumerChangeAvatar,
         ChatRoomSettingsForm, ChatRoomChangeAvatar
@@ -30,11 +31,10 @@ class ChatRoomView(NotificationsMixin, View):
             'user_chats': user_chats,
             'this_chat': this_chat,
             'chat_messages': chat_messages,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
         }
+        context.update(self.context_notif)
         return render(request, 'chat_room.html', context)
-    
+
     def post(self, request, chat_id):
         create_chate_room_message(request, chat_id)
         chat = get_object_or_404(ChatRoom, id=chat_id)
@@ -45,9 +45,8 @@ class FriendsView(FriendsListMixin, NotificationsMixin, View):
     def get(self, request):
         context = {
                 'friends': self.friends,
-                'notifications': self.notifications,
-                'notif_to_me': self.notif_to_me,
                 }
+        context.update(self.context_notif)
         return render(request, 'friends.html', context)
 
     def post(self, request):
@@ -66,9 +65,8 @@ class UserProfile(NotificationsMixin, View):
         user_c = get_object_or_404(User, id=user_id)
         context = {
             'user_c': user_c,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
         }
+        context.update(self.context_notif)
         return render(request, 'user_profile.html', context)
 
 
@@ -79,9 +77,8 @@ class ChangeProfile(NotificationsMixin, View):
         context = {
             'form': form,
             'form_image': form_image,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
         }
+        context.update(self.context_notif)
         return render (request, 'user_profile_change.html', context)
 
     def post(self, request):
@@ -118,9 +115,8 @@ class ChatRoomSettings(NotificationsMixin, View):
             'this_chat': this_chat,
             'settings': settings,
             'change_image': change_image,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
         }
+        context.update(self.context_notif)
         return render(request, 'chat_room_settings.html', context)
 
     def post(self, request, room_id):
@@ -153,9 +149,8 @@ class AddFriendToChatView(NotificationsMixin, View):
         context = {
             'friends': friends,
             'chat': chat,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
         }
+        context.update(self.context_notif)
         return render(request, 'add_friend_to_chat.html', context)
 
 
@@ -196,8 +191,8 @@ def answer_to_friend_request(request, notification_id, answer):
     notification = get_object_or_404(AddToFriendNotification, id=notification_id)
     notification.agreed = answer
     notification.save()
-    print(notification.agreed)
-    if notification.agreed:
+    print(answer, type(answer))
+    if answer == 'True':
         from_user = notification.send_from
         request.user.consumer.friends.add(from_user.consumer)
         from_user.consumer.friends.add(request.user.consumer)
@@ -209,9 +204,9 @@ def delete_notification(request, notification_id):
     notification.delete()
     return HttpResponseRedirect('/')
 
+
 def delete_friend(request, friend_id):
-    for friend in request.user.consumer.friends.all():
-        if friend.user.id == friend.id:
-            request.user.consumer.friends.remove(friend)
-            break
+    friend = get_object_or_404(Consumer, id=friend_id)
+    request.user.consumer.friends.remove(friend)
+    friend.friends.remove(request.user.consumer)
     return HttpResponseRedirect(reverse('messanger:friends'))

@@ -43,13 +43,15 @@
         </div>
 
         <div style="visibility: visible" id="btn_{{friend.id}}">
-          <button style="border: None; background-color: white;" onclick="are_u_sure('{{friend_id}}')">
+          <button style="border: None; background-color: white;" onclick="are_u_sure(friend_id='{{friend.id}}')">
             <span style="color: red;">Delete from friends</span>
           </button>
         </div>
         <div style="visibility: hidden;" id='sure_{{friend.id}}'>
-          <button style="border: None; background-color: white;"><a href="#">No</a></button>
-          <a href="#">Yes</a>
+          <button style="border: None; background-color: white;" onclick="are_u_sure('{{friend.id}}')">
+            <a href="#">No</a>
+          </button>
+          <a href="{% url 'messanger:delete_friend' friend.id %}">Yes</a>
         </div>
         
       </div>
@@ -61,7 +63,17 @@
 </div>
 
 <script>
-  function are_u_sure
+  function are_u_sure(friend_id) {
+    let but = document.getElementById('btn_' + friend_id);
+    let sore = document.getElementById('sure_' + friend_id);
+    if ( but.style.visibility == 'visible' ) {
+      but.style.visibility = 'hidden';
+      sore.style.visibility = 'visible';
+    } else {
+      but.style.visibility = 'visible';
+      sore.style.visibility = 'hidden';
+    }
+  }
 </script>
 
 

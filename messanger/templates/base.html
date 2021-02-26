@@ -55,6 +55,9 @@
               <div class="dropdown mt-1">
                 <button style="background-color: white;" class="dropdown-toggle" type='button' id='dropdowMenu2' data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                   <img style="width: 45px;" src="{% static 'notif.png' %}">
+                  {% if all_notif %}
+                    <span class="badge badge-danger" style="background-color: red;;">{{all_notif}}</span>
+                  {% endif %}
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
 

@@ -9,7 +9,7 @@ from .views import ( ChatRoomView,
 
 from .views import ( delete_chat_room, add_friend_to_chat, give_moderator_priveleges,
                      kick_user_from_room, send_friend_request, delete_notification,
-                     answer_to_friend_request,
+                     answer_to_friend_request, delete_friend
                      )
 
 app_name = 'messanger'
@@ -31,4 +31,5 @@ urlpatterns = [
     path('send-friend/<int:from_user_id>/<int:to_user_id>/', send_friend_request, name='send_friend_request'),
     path('delete-notification/<int:notification_id>/', delete_notification, name='del_notification'),
     path('answer-to-friend-request/<int:notification_id>/<str:answer>/', answer_to_friend_request, name='answer_friend_request'),
+    path('delete-friend/<int:friend_id>/', delete_friend, name='delete_friend'),
 ]
