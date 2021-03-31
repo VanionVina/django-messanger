@@ -65,7 +65,7 @@
                     {% if notif.agreed != False and notif.agreed != True %}
                     {{ notif.agreed }}
                       <div class="alert alert-info">
-                        <li>{{notif.send_from.username}} wanted to be your friend</li>
+                        <li><a style="color: blue" href="{{notif.send_from.consumer.get_absolute_url}}">{{notif.send_from.username}}</a> wanted to be your friend</li>
                         <a href="{% url 'messanger:answer_friend_request' notif.id True %}" style="color: green">Agree</a>
                         <a href="{% url 'messanger:answer_friend_request' notif.id False %}" style="color: red">Disagree</a>
                       </div>
