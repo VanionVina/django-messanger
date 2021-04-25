@@ -23,18 +23,18 @@
 			</div>
             {% endif %}
 	<div class="chat-box bg-white col-md-8" style="border: 3px dotted lightgrey; border-bottom: 0px;">
-			<form action="{% url 'messanger:chat_room' this_chat.id %}" method="post">
+			<!-- <form action="{% url 'messanger:chat_room' this_chat.id %}" method="post"> -->
 				<div class="input-group" style="width: 95%;">
 					{% csrf_token %}
-					<input name='sended-message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+					<input id='message-input' name='sended-message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
 					<span class="input-group-btn">
-						<button type="submit" class="btn btn-success no-rounded" type="button">Send</button>
+						<button id="message-btn" type="submit" class="btn btn-success no-rounded" type="button">Send</button>
 					</span>
 				</div><!-- /input-group -->	
-			</form>
+			<!-- </form> -->
 	</div>            
     	<div class="col-md-8 bg-white" style="overflow-y: scroll; height: 85vh; border: 3px dotted lightgrey;">
-            <div class="chat-message">
+            <div id="message-list" class="chat-message">
                 <ul class="chat">
 					{% if chat_messages %}
 						{% for message in chat_messages %}
@@ -81,10 +81,97 @@
   </div>
 
 {% else %}
+	{% include 'user_chats.html' %}
 <h2>There is no chats</h2>
 {% endif %}
 
 </div>
+
+{{ this_chat.name|json_script:"room-name" }}
+{{ request.user.username|json_script:"author" }}
+<script>
+	const roomName = JSON.parse(document.querySelector('#room-name').textContent);
+	const author = JSON.parse(document.querySelector("#author").textContent);
+
+	const chatSocket = new WebSocket(
+		'ws://' + 
+		window.location.host + 
+		'/ws/chat/' +
+		roomName +
+		'/'
+	);
+
+	chatSocket.onmessage = function(e) {
+		const data = JSON.parse(e.data);
+		messageList = document.getElementById("message-list");
+
+		if (data['message']['username'] != author) {
+			var message_text_html = 
+    '<ul class="chat">\n' +
+    '<li class="left clearfix">\n' +
+        '<span class="chat-img pull-left">\n' +
+            '<a href="' + data['message']['absolute_url'] + '">\n' +
+                '<img src="'+ data['message']['avatar_url'] + '" alt="User Avatar">\n' +
+            '</a>\n' +
+        '</span>\n' +
+        '<div class="chat-body clearfix">\n' +
+            '<div class="header">\n' +
+                '<a href="'+ data['message']['absolute_url'] +'">\n' +
+                    '<strong class="primary-font">\n' +
+                        data['message']['username'] +
+                    '</strong>\n' +
+                '</a>\n' +
+                '<small class="pull-right text-muted"><i class="fa fa-clock-o"></i>' + data['message']['sended'] +  '</small>\n' +
+            '</div>\n' +
+            '<p>\n' +
+                data['message']['text'] +
+            '</p>\n' +
+			'</ul>\n'
+
+		} else {
+
+			var message_text_html = 
+    '<ul class="chat">\n' +
+    '<li class="right clearfix">\n' +
+        '<span class="chat-img pull-right">\n' +
+            '<a href="'+ data['message']['absolute_url'] +'"><img src="'+ data['message']['avatar_url'] +'" style="width: 50px;" alt="User Avatar"></a>\n' +
+        '</span>\n' +
+        '<div class="chat-body clearfix">\n' +
+            '<div class="header">\n' +
+                '<a href="'+ data['message']['absolute_url'] +'"><strong class="primary-font">'+ data['message']['username'] +'</strong></a>\n' +
+                '<small class="pull-right text-muted"><i class="fa fa-clock-o"></i>'+ data['message']['sended'] + '</small>\n' +
+            '</div>\n' +
+            '<p>\n' +
+                data['message']['text'] +
+            '</p>\n' +
+        '</div>\n' +
+    '</li>\n'+
+	'</ul>'
+			};
+
+		messageList.insertAdjacentHTML(
+			'afterbegin',
+			message_text_html
+		);
+	};
+
+	document.querySelector("#message-input").focus()
+	document.querySelector("#message-input").onkeyup = function(e) {
+		if (e.keyCode === 13) {
+			document.querySelector("#message-btn").click();
+		};
+	};
+
+	document.querySelector("#message-btn").onclick = function(e) {
+		const messageInput = document.querySelector("#message-input");
+		const message = messageInput.value;
+		chatSocket.send(JSON.stringify({
+			'message': message,
+			'author': author,
+		}));
+		messageInput.value = '';
+	};
+</script>
 
 {% endblock %}
 

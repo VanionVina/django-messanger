@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'imagekit',
-    'widget_tweaks'
+    'widget_tweaks',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -85,9 +95,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_db',
-        'USER': 'for_dj',
-        'PASSWORD': 'password',
+        'NAME': 'for_ms',
+        'USER': 'u_for_ms',
+        'PASSWORD': 'PASSWORD',
         'HOST': 'localhost',
         'PORT': '6432'
     }

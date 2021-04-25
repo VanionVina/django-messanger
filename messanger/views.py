@@ -24,8 +24,9 @@ class ChatRoomView(NotificationsMixin, View):
         consumer = get_object_or_404(Consumer, user=request.user)
         user_chats = ChatRoom.objects.filter(users=request.user)
         this_chat, chat_messages = get_user_chats(user_chats, chat_id)
-        if request.user not in this_chat.users.all():
-            return HttpResponseRedirect(reverse('messanger:chat_room'))
+        if this_chat:
+            if request.user not in this_chat.users.all():
+                return HttpResponseRedirect(reverse('messanger:chat_room'))
         context = {
             'consumer': consumer,
             'user_chats': user_chats,
