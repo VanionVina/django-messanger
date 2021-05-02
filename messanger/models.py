@@ -13,7 +13,7 @@ class Consumer(models.Model):
         ('helicopter', 'Helicopter')
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='consumer')
-    phone = models.CharField(max_length=20, verbose_name='Phone number')
+    phone = models.CharField(max_length=20, verbose_name='Phone number', null=True, blank=True, default='')
     birth = models.DateField(verbose_name='Birthday')
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
     friends = models.ManyToManyField('Consumer', default=None, blank=True,  verbose_name='Friends')

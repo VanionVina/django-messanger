@@ -10,11 +10,11 @@ from messanger.forms import (
         )
 from messanger.logic.user_change import change_user_avatar
 from messanger.logic.chat_logic import (
-        get_user_chats, create_chate_room_message,
+        get_user_chats,
         create_new_chat_room, save_chat_settings,
         save_chat_image
         )
-from messanger.models import Consumer, ChatRoom, Message, AddToFriendNotification
+from messanger.models import Consumer, ChatRoom, AddToFriendNotification
 from .mixins import FriendsListMixin, NotificationsMixin
 
 
@@ -36,10 +36,10 @@ class ChatRoomView(NotificationsMixin, View):
         context.update(self.context_notif)
         return render(request, 'chat_room.html', context)
 
-    def post(self, request, chat_id):
-        create_chate_room_message(request, chat_id)
-        chat = get_object_or_404(ChatRoom, id=chat_id)
-        return HttpResponseRedirect(chat.get_absolute_url())
+    # def post(self, request, chat_id):
+    #     create_chate_room_message(request, chat_id)
+    #     chat = get_object_or_404(ChatRoom, id=chat_id)
+    #     return HttpResponseRedirect(chat.get_absolute_url())
 
 
 class FriendsView(FriendsListMixin, NotificationsMixin, View):
@@ -64,8 +64,12 @@ class FriendsView(FriendsListMixin, NotificationsMixin, View):
 class UserProfile(NotificationsMixin, View):
     def get(self, request, user_id):
         user_c = get_object_or_404(User, id=user_id)
+        sended_requests_to_friends_users = [notif.send_to for notif in self.notifications]
+        sended_requests_to_me_users = [notif.send_from for notif in self.notif_to_me]
         context = {
             'user_c': user_c,
+            'sended_requests_to_friends': sended_requests_to_friends_users,
+            'sended_request_to_me_users': sended_requests_to_me_users,
         }
         context.update(self.context_notif)
         return render(request, 'user_profile.html', context)

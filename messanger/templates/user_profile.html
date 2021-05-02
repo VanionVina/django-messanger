@@ -10,12 +10,16 @@
 
                     {% if user_c.consumer in user.consumer.friends.all %}
                         <h3>This is your friend</h3>
-                    {% elif user_c == user %}
-                        <!-- Nothin here -->
-                    {% else %}
-                    <a href="{% url 'messanger:send_friend_request' request.user.id user_c.id %}">
-                        <button class="button btn-success">Add to friends</button>
-                    </a>
+                    {% elif user_c != user %}
+
+                        {% if user_c in sended_request_to_me_users %}
+                            <button class='button btn-success'>Accept request to friends</button>
+                        {% elif user_c not in sended_requests_to_friends %}
+                        <!-- <a href="{% url 'messanger:send_friend_request' request.user.id user_c.id %}"> -->
+                            <button id="add-to-friends-btn" class="button btn-success">Add to friends</button>
+                        <!-- </a> -->
+                        {% endif %}
+
                     {% endif %}
 
                     {% if user != user_c %}
@@ -86,22 +90,8 @@
             {% endif %}
 
         </div>
-        <!-- <div class="row">
-            <div class="col-md-4">
-                <div class="profile-work">
-                    <p>WORK LINK</p>
-                    <a href="">Website Link</a><br/>
-                    <a href="">Bootsnipp Profile</a><br/>
-                    <a href="">Bootply Profile</a>
-                    <p>SKILLS</p>
-                    <a href="">Web Designer</a><br/>
-                    <a href="">Web Developer</a><br/>
-                    <a href="">WordPress</a><br/>
-                    <a href="">WooCommerce</a><br/>
-                    <a href="">PHP, .Net</a><br/>
-                </div>
-            </div>
-        </div> -->
 </div>
+
+{{ user_c.id|json_script:'sendToUserId' }}
 
 {% endblock %}

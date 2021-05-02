@@ -20,11 +20,6 @@ class LoginForm(forms.Form):
 
 
 class RegisterFormConsumer(forms.ModelForm):
-    # username = forms.CharField(max_length=50, help_text='Nickname')
-    # passwd = forms.CharField(widget=forms.PasswordInput, help_text='Password')
-    # confirm_passwd = forms.CharField(widget=forms.PasswordInput, help_text='Confirm password')
-    # phone = forms.CharField(max_length=20, help_text='Phone number')
-    # birth = forms.DateField(help_text='Birthday')
 
     class Meta:
         model = Consumer

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel='stylesheet' href="{% static 'css/base.css' %}">
+    <link rel='shortcut icon' type='image/x-icon'  href='{% static "assets/img/favicon.ico" %}'>
 </head>
 <body>
 <div id="viewport">
@@ -34,7 +35,7 @@
           </a>
         </li>
       </ul>
-    </div>
+    </div> 
     <!-- Content -->
     <div id="content">
       <nav class="navbar navbar-default">
@@ -55,19 +56,17 @@
               <div class="dropdown mt-1">
                 <button style="background-color: white;" class="dropdown-toggle" type='button' id='dropdowMenu2' data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                   <img style="width: 45px;" src="{% static 'notif.png' %}">
-                  {% if all_notif %}
-                    <span class="badge badge-danger" style="background-color: red;;">{{all_notif}}</span>
-                  {% endif %}
+                    <span id='notifications-count' class="badge badge-danger" style="background-color: red; visibility: hidden;">{{all_notif}}</span>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <ul id='notification-list' class="dropdown-menu" aria-labelledby="dropdownMenu2">
 
                   {% for notif in notif_to_me %}
                     {% if notif.agreed != False and notif.agreed != True %}
                     {{ notif.agreed }}
                       <div class="alert alert-info">
                         <li><a style="color: blue" href="{{notif.send_from.consumer.get_absolute_url}}">{{notif.send_from.username}}</a> wanted to be your friend</li>
-                        <a href="{% url 'messanger:answer_friend_request' notif.id True %}" style="color: green">Agree</a>
-                        <a href="{% url 'messanger:answer_friend_request' notif.id False %}" style="color: red">Disagree</a>
+                        <button class='button btn-link'><a href="#" style="color: green">Agree</a></button>
+                        <button class='button btn-link'><a href="#" style="color: red">Disagree</a></button>
                       </div>
                      {% endif %}
                   {% endfor %}
@@ -126,5 +125,66 @@
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+
+  {{ user.id|json_script:'curUserId' }}
+  <script>
+    notifCount = document.querySelector('#notifications-count');
+    if (notifCount.textContent != 0) {
+      notifCount.style.visibility = 'visible';
+    };
+
+    const curUserId = JSON.parse(document.querySelector("#curUserId").textContent);
+
+    const userSocket = new WebSocket(
+      'ws://' +
+      window.location.host +
+      '/ws/user/' +
+      curUserId +
+      '/'
+    );
+
+
+    addToFriendsBtn = document.querySelector('#add-to-friends-btn');
+
+    if (addToFriendsBtn) {
+      addToFriendsBtn.onclick = function(e) {
+          friendNotifTo = document.querySelector("#sendToUserId").textContent;
+          addToFriendsBtn.style.visibility = 'hidden';
+          userSocket.send(JSON.stringify({
+              'notification_to': friendNotifTo,
+          }));
+      };
+    };
+
+    agreeFriendBtn = document.querySelector('#agree-friend');
+    disagreeFriendBtn = document.querySelector('#disagree-friend');
+
+    userSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      notifList = document.querySelector("#notification-list");
+      notifCount.style.visibility = 'visible';
+      notifCount.textContent = parseInt(notifCount.textContent) + 1;
+      notifList.insertAdjacentHTML(
+        'afterbegin',
+        "<div class='alert alert-info'>\n" +
+          "<li><a style='color: blue' href='" + data['notif']['send_from_url'] + "'>" + data['notif']['send_from'] + "</a> wanted to be your friend</li>\n" +
+          "<button id='agree-friend'class='button btn-link'><a href='#' style='color: green'>Agree</a></button>\n" +
+          "<button id='disagree-friend' class='button btn-link'><a href='#' style='color: red'>Disagree</a></button>\n" +
+        "</div>"
+      );
+      agreeFriendBtn = document.querySelector('#agree-friend');
+      disagreeFriendBtn = document.querySelector('#disagree-friend');
+
+      agreeFriendBtn.onclick = function (e) {
+        alert('Agree? usrid: ' + data['notif']['send_from']);
+        };
+
+      disagreeFriendBtn.onclick = function (e) {
+        alert('Disagree? usrid: ' + data['notif']['send_from']);
+      };
+    };
+
+  </script>
+
 </body>
 </html>

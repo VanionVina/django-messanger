@@ -1,9 +1,10 @@
 from channels.db import database_sync_to_async
+
 from django.contrib.auth.models import User
-#<!-- 1)from_user.?username?; 2)from_user.absolute_url; 3)from_user.avatar_url; 5)message_time; 6) message.text-->
+
+from messanger.models import AddToFriendNotification
 
 
-# @database_sync_to_async
 def get_message_data_as_dict(author, text, message_sended):
     author_as_user = User.objects.get(username=author)
     author_username = author_as_user.username
@@ -15,5 +16,16 @@ def get_message_data_as_dict(author, text, message_sended):
         'avatar_url': author_avatar,
         'text': text,
         'sended': message_sended,
+    }
+    return data
+
+
+@database_sync_to_async
+def get_notification_data_as_dict(notif_id):
+    notification = AddToFriendNotification.objects.get(id=notif_id)
+    data = {
+        'send_from': notification.send_from.username,
+        'send_from_id': notification.send_from.id,
+        'send_from_url': notification.send_from.consumer.get_absolute_url(),
     }
     return data

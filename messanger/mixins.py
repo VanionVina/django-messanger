@@ -21,8 +21,8 @@ class NotificationsMixin(View):
             if notif.agreed == False or notif.agreed == True:
                 self.all_notif += 1
         self.context_notif = {
-            'all_notif': self.all_notif,
-            'notifications': self.notifications,
-            'notif_to_me': self.notif_to_me,
+            'all_notif': self.all_notif,            # All, connected to me
+            'notifications': self.notifications,    # From me
+            'notif_to_me': self.notif_to_me,        # To me
         }
         return super().dispatch(request, *args, **kwargs)
