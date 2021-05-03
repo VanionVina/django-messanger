@@ -6,14 +6,14 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="profile-img">
-                    <img src="{{user_c.consumer.avatar.url}}" style="width: 80%;" alt=""/>
+                    <img src="{{user_c.consumer.avatar.url}}" style="width: 80%;" alt="user-avatar"/>
 
                     {% if user_c.consumer in user.consumer.friends.all %}
                         <h3>This is your friend</h3>
                     {% elif user_c != user %}
 
                         {% if user_c in sended_request_to_me_users %}
-                            <button class='button btn-success'>Accept request to friends</button>
+                            <p>Request to friends received</p>
                         {% elif user_c not in sended_requests_to_friends %}
                         <!-- <a href="{% url 'messanger:send_friend_request' request.user.id user_c.id %}"> -->
                             <button id="add-to-friends-btn" class="button btn-success">Add to friends</button>

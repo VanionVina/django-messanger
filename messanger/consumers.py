@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from .models import Message, ChatRoom, AddToFriendNotification
 from .logic.serialilazer import get_message_data_as_dict, get_notification_data_as_dict
-
+from .logic import notifications_asgi
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -83,15 +83,11 @@ class UserConsumer(AsyncWebsocketConsumer):
     
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        notification_to = text_data_json['notification_to']
+        notification_to = text_data_json.get('notification_to')
         if notification_to:
             notification_from = self.scope['user'].id
-            notification = await self.create_new_notification(from_user=notification_from, to_user=notification_to)
-            # notif = await get_notification_data_as_dict(notif_id=notification.id)
-            notif = {
-                'send_from': notification.send_from.username,
-                'send_from_url': '#',
-            }
+            notification = await notifications_asgi.create_new_notification(from_user=notification_from, to_user=notification_to)
+            notif = await get_notification_data_as_dict(notif_id=notification.id)
             await self.channel_layer.group_send(
                 f'user_{notification_to}',
                 {
@@ -100,15 +96,35 @@ class UserConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+        notification_agreed = text_data_json.get('notif_agreed')
+        if notification_agreed:
+            notif_id = text_data_json['notif_id']
+            if notification_agreed == True:
+                answer = True
+                await notifications_asgi.friends_notif_true(notif_id)
+            elif notification_agreed == 'False':
+                answer = False
+            notif_from = await notifications_asgi.update_notification_answer(notif_id=int(notif_id), answer=answer)
+            notif_answer = await get_notification_data_as_dict(notif_id=notif_id)
+            notif_answer['answer'] = 'True' if answer else 'False'
+            await self.channel_layer.group_send(
+                f'user_{notif_from}',
+                {
+                    'type': 'notification_answer',
+                    'notif_answer': notif_answer
+                }
+            )
 
-    @database_sync_to_async
-    def create_new_notification(self, from_user, to_user):
-        send_from_user = User.objects.get(id=int(from_user))
-        send_to_user = User.objects.get(id=int(to_user))
-        # new_notif = AddToFriendNotification.objects.create(send_from=send_from_user, send_to=send_to_user)
-        new_notif = AddToFriendNotification(send_from=send_from_user, send_to=send_to_user)
-        return new_notif 
+        del_notif_id = text_data_json.get('delete_notif_id')
+        if del_notif_id:
+            await notifications_asgi.delete_notification(del_notif_id)
 
+
+    async def notification_answer(self, event):
+        answer = event['notif_answer']
+        await self.send(text_data=json.dumps({
+            'notif_answer': answer
+        }))
 
     
     async def new_notification(self, event):

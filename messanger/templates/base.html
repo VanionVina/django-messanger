@@ -62,25 +62,24 @@
 
                   {% for notif in notif_to_me %}
                     {% if notif.agreed != False and notif.agreed != True %}
-                    {{ notif.agreed }}
-                      <div class="alert alert-info">
+                      <div class="alert alert-info" id='notif_list_{{notif.id}}'>
                         <li><a style="color: blue" href="{{notif.send_from.consumer.get_absolute_url}}">{{notif.send_from.username}}</a> wanted to be your friend</li>
-                        <button class='button btn-link'><a href="#" style="color: green">Agree</a></button>
-                        <button class='button btn-link'><a href="#" style="color: red">Disagree</a></button>
+                        <button class='button btn-link' onclick="agreeFriendBtn('{{notif.id}}')"><a href="#" style="color: green">Agree</a></button>
+                        <button class='button btn-link' onclick="disagreeFriendBtn('{{notif.id}}')"><a href="#" style="color: red">Disagree</a></button>
                       </div>
                      {% endif %}
                   {% endfor %}
 
                   {% for notif in notifications %}
                       {% if notif.agreed %}
-                      <div class="alert alert-success">
+                      <div class="alert alert-success" id='notif-answ-ok-{{notif.id}}'>
                         <li>{{notif.send_to}} is now your friend!</li>
-                        <a href="{% url 'messanger:del_notification' notif.id %}">OK</a>
+                        <button class="button btn-link" onclick="notifAnswerOk('{{notif.id}}')"><a href="#">OK</a></button>
                       </div>
                       {% elif notif.agreed == False %}
-                      <div class="alert alert-danger">
+                      <div class="alert alert-danger" id='notif-answ-ok-{{notif.id}}'>
                         <li>{{notif.send_to}} disagreed you friend request</li>
-                        <a href="{% url 'messanger:del_notification' notif.id %}">OK</a>
+                        <button class='button btn-link' onclick="notifAnswerOk('{{notif.id}}')"><a href="#">OK</a></button>
                       </div>
                       {% endif %}
                   {% endfor %}
@@ -92,8 +91,8 @@
             <li>
               <div class="dropdown mt-1">
                 <button style="background-color: white; color: black; border: 1px solid grey;" class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  {{ user.username }}
                   <img style="border-radius: 50%; width: 45px;" src="{{ user.consumer.avatar.url }}">
+                  <span>{{user.username}}</span>
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -156,33 +155,76 @@
       };
     };
 
-    agreeFriendBtn = document.querySelector('#agree-friend');
-    disagreeFriendBtn = document.querySelector('#disagree-friend');
 
     userSocket.onmessage = function (e) {
       const data = JSON.parse(e.data);
       notifList = document.querySelector("#notification-list");
       notifCount.style.visibility = 'visible';
       notifCount.textContent = parseInt(notifCount.textContent) + 1;
+
+      // friend request notif
+      if (data['notif']) {
       notifList.insertAdjacentHTML(
         'afterbegin',
-        "<div class='alert alert-info'>\n" +
+        "<div class='alert alert-info' id='notif_list_" + data['notif']['id'] + "'>\n" +
           "<li><a style='color: blue' href='" + data['notif']['send_from_url'] + "'>" + data['notif']['send_from'] + "</a> wanted to be your friend</li>\n" +
-          "<button id='agree-friend'class='button btn-link'><a href='#' style='color: green'>Agree</a></button>\n" +
-          "<button id='disagree-friend' class='button btn-link'><a href='#' style='color: red'>Disagree</a></button>\n" +
+          "<button onclick='agreeFriendBtn(" + data['notif']['id'] +")' class='button btn-link'><a href='#' style='color: green'>Agree</a></button>\n" +
+          "<button onclick='disagreeFriendBtn("+ data['notif']['id'] +")' class='button btn-link'><a href='#' style='color: red'>Disagree</a></button>\n" +
         "</div>"
       );
-      agreeFriendBtn = document.querySelector('#agree-friend');
-      disagreeFriendBtn = document.querySelector('#disagree-friend');
 
-      agreeFriendBtn.onclick = function (e) {
-        alert('Agree? usrid: ' + data['notif']['send_from']);
+      // friend notif answer
+      } else if (data['notif_answer']) {
+        if (data['notif_answer']['answer'] == 'True') {
+          notifList.insertAdjacentHTML(
+            'afterbegin',
+            '<div class="alert alert-success" id="notif-answ-ok-'+ data['notif_answer']['id'] +'">\n' +
+              '<li>' + data['notif_answer']['send_to'] + ' is now your friend!</li>\n' +
+              '<button class="button btn-link" onclick="notifAnswerOk('+ data['notif_answer']['id'] + ')"><a href="#">OK</a></button>\n' +
+            '</div>'
+          );
+        } else {
+          notifList.insertAdjacentHTML(
+            'afterbegin',
+            '<div class="alert alert-danger" id="notif-answ-ok-' + data['notif_answer']['id'] + '">\n' +
+              '<li>' + data['notif_answer']['send_to'] +' disagreed you friend request</li>\n' +
+              '<button class="button btn-link" onclick="notifAnswerOk('+ data['notif_answer']['id'] +')"><a href="#">OK</a></button>\n' +
+            '</div>'
+          );
         };
-
-      disagreeFriendBtn.onclick = function (e) {
-        alert('Disagree? usrid: ' + data['notif']['send_from']);
       };
+
     };
+    // End socket onmesage
+
+  function agreeFriendBtn(notif_id) {
+    userSocket.send(JSON.stringify({
+      'notif_agreed': true,
+      'notif_id': notif_id
+    }))
+    notif_in_list = document.querySelector('#notif_list_' + notif_id);
+    notif_in_list.remove();
+    notifCount.textContent = parseInt(notifCount.textContent) - 1;
+  };
+
+  function disagreeFriendBtn(notif_id) {
+      userSocket.send(JSON.stringify({
+        'notif_agreed': 'False',
+        'notif_id': notif_id
+      }))
+      notif_in_list = document.querySelector('#notif_list_' + notif_id);
+      notif_in_list.remove();
+      notifCount.textContent = parseInt(notifCount.textContent) - 1;
+  }
+
+  function notifAnswerOk(notif_id) {
+    notif_answ_ok = document.querySelector('#notif-answ-ok-' + notif_id);
+    notif_answ_ok.remove();
+    notifCount.textContent = parseInt(notifCount.textContent) - 1;
+    userSocket.send(JSON.stringify({
+      'delete_notif_id': notif_id
+    }))
+  };
 
   </script>
 

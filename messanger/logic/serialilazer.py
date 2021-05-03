@@ -25,7 +25,9 @@ def get_notification_data_as_dict(notif_id):
     notification = AddToFriendNotification.objects.get(id=notif_id)
     data = {
         'send_from': notification.send_from.username,
+        'send_to': notification.send_to.username,
         'send_from_id': notification.send_from.id,
         'send_from_url': notification.send_from.consumer.get_absolute_url(),
+        'id': notif_id
     }
     return data
